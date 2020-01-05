@@ -126,10 +126,10 @@ exports.convertDateRead = function (time)
 
 exports.log = function (type, data)
 {
-    let log_file = fs.createWriteStream(`${__dirname}/../logs/${func.convertDateOnly()}.log`, {flags : 'a'})
-
     try
     {
+        let log_file = fs.createWriteStream(`${__dirname}/../logs/${func.convertDateOnly()}.log`, {flags : 'a'})
+        
         if (type == 'err') {
             console.log('\x1b[37m[' + func.convertDate() + '] \x1b[31m[Erreur] \x1b[37m: ' + data)
             log_file.write(`[${func.convertDate()}] [Erreur] : ${data}\n`)
