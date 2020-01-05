@@ -53,6 +53,36 @@ exports.convertDate = function (time)
     
 }
 
+exports.convertDateOnly = function (time)
+{
+    if (time) date = new Date(time)
+    else date = new Date()
+    
+    
+    let dateToReturn = ""
+
+    let y = date.getFullYear()
+    let M = date.getMonth()+1
+    let d = date.getDate()
+
+    if (y < 10) {
+        dateToReturn = dateToReturn + "0"
+    }
+    dateToReturn = dateToReturn + y + "-"
+
+    if (M < 10) {
+        dateToReturn = dateToReturn + "0"
+    }
+    dateToReturn = dateToReturn + M + "-"
+
+    if (d < 10) {
+        dateToReturn = dateToReturn + "0"
+    }
+    dateToReturn = dateToReturn + d + " "
+
+    return dateToReturn
+}
+
 exports.convertDateRead = function (time) 
 {
     if (time) date = new Date(time)
@@ -96,23 +126,34 @@ exports.convertDateRead = function (time)
 
 exports.log = function (type, data)
 {
-    
+    let log_file = fs.createWriteStream(`${__dirname}/../logs/${func.convertDateOnly()}.log`, {flags : 'a'})
 
-    now = new Date();
-    if (type == 'err') {
-        console.log('\x1b[37m[' + func.convertDate() + '] \x1b[31m[Erreur] \x1b[37m: ' + data)
+    try
+    {
+        if (type == 'err') {
+            console.log('\x1b[37m[' + func.convertDate() + '] \x1b[31m[Erreur] \x1b[37m: ' + data)
+            log_file.write(`[${func.convertDate()}] [Erreur] : ${data}\n`)
+        }
+        if (type == 'warn') {
+            console.log('\x1b[37m[' + func.convertDate() + '] \x1b[33m[Attention] \x1b[37m: ' + data)
+            log_file.write(`[${func.convertDate()}] [Attention] : ${data}\n`)
+        }
+        if (type == 'info') {
+            console.log('\x1b[37m[' + func.convertDate() + '] \x1b[36m[Info] \x1b[37m: ' + data)
+            log_file.write(`[${func.convertDate()}] [Info] : ${data}\n`)
+        }
+        if (type == 'cmd') {
+            console.log('\x1b[37m[' + func.convertDate() + '] \x1b[35m[Commande] \x1b[37m: ' + data)
+            log_file.write(`[${func.convertDate()}] [Commande] : ${data}\n`)
+        }
+        if (type == 'vocal') {
+            console.log('\x1b[37m[' + func.convertDate() + '] \x1b[32m[Salons Vocaux] \x1b[37m: ' + data)
+            log_file.write(`[${func.convertDate()}] [Salons Vocaux] : ${data}\n`)
+        }
     }
-    if (type == 'warn') {
-        console.log('\x1b[37m[' + func.convertDate() + '] \x1b[33m[Attention] \x1b[37m: ' + data)
-    }
-    if (type == 'info') {
-        console.log('\x1b[37m[' + func.convertDate() + '] \x1b[36m[Info] \x1b[37m: ' + data)
-    }
-    if (type == 'cmd') {
-        console.log('\x1b[37m[' + func.convertDate() + '] \x1b[35m[Commande] \x1b[37m: ' + data)
-    }
-    if (type == 'vocal') {
-        console.log('\x1b[37m[' + func.convertDate() + '] \x1b[32m[Salons Vocaux] \x1b[37m: ' + data)
+    catch(error)
+    {
+        console.error(error)
     }
 }
 
