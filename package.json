@@ -1,7 +1,7 @@
 {
-  "name": "tekuv3",
-  "version": "1.0.0",
-  "description": "Version 3 de teku (le bot du discord dynivers)",
+  "name": "teku",
+  "version": "3.0.0",
+  "description": "Teku (le bot du discord dynivers)",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

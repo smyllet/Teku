@@ -9,8 +9,8 @@ module.exports = {
     usage: '<clé_sondage (10 car. max et sans espace)>',
     aliases: ['c'],
     permition: [3,5,7,11,13],
-    enable: true,
+    enable: false,
     execute(message,args,db) {
-        //TODO
+        //TODO !
     }
 }

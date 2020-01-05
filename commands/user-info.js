@@ -4,7 +4,7 @@ const config = require('../config.json') //config
 
 module.exports = {
     name: 'user-info',
-    description: "Obtenir fiche d'information d'un membre",
+    description: "Obtenir la fiche d'information d'un membre",
     cat: 'Modération',
     guildOnly: true,
     args: true,

@@ -2,7 +2,7 @@ const func = require('../addon/fonction')
 
 module.exports = {
     name: 'ping',
-    description: "pong",
+    description: "Pong",
     guildOnly: false,
     args: false,
     usage: '',

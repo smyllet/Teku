@@ -1,0 +1,17 @@
+{
+    "prefix":"!",
+    "token": "",
+    "botdesc": "Commande: !help",
+    "guildId": "",
+    "staffZoneId": "",
+    "reportChannelId": "",
+
+    "database":
+    {
+        "host": "localhost",
+        "user": "",
+        "password": "",
+        "database": "",
+        "charset" : "utf8mb4"
+    }
+}

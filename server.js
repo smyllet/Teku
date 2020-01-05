@@ -21,7 +21,6 @@ bot.on('ready', function () {
     bot.user.setActivity(config.botdesc)
     func.log('info','Le bot est connecté')
     autoRefreshUsersData()
-    //console.log(bot.guilds.find('id',config.guildId).members)
 })
 bot.on('error', function (e) {
     func.log('err', e)
@@ -190,7 +189,7 @@ bot.on("message", async message =>
     }
 
     if (command.guildOnly && message.channel.type !== 'text') {
-        return message.reply('Je ne peux exécuter cette commande en message privé!')
+        return message.reply('Je ne peux pas exécuter cette commande en message privé!')
     }
 
     //- - Vérification des droit d'utilisation du bot - -//
@@ -240,6 +239,7 @@ bot.on("message", async message =>
                             try {
                                 command.execute(message, args, db, result[0].permition_user)
                             } catch (error) {
+                                func.log('err',"Erreur lors de l'exécution de la commande")
                                 func.log('err',error)
                                 message.reply("Une erreur c'est produite lors de l'exécution de la commande!")
                             }

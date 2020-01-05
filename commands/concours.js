@@ -2,7 +2,7 @@ const func = require('../addon/fonction')
 
 module.exports = {
     name: 'concours',
-    description: "Commande de gestion concours",
+    description: "Commande de gestion des concours",
     subCommand: true,
     guildOnly: true,
     args: false,

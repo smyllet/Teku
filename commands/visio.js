@@ -2,7 +2,7 @@ const func = require('../addon/fonction')
 
 module.exports = {
     name: 'visio',
-    description: "Optention du lien pour les partages d'ecran et cam sur salon vocaux",
+    description: "Optention du lien pour les partages d'ecrans et cam sur les salons vocaux",
     guildOnly: true,
     args: false,
     usage: '',

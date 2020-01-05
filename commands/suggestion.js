@@ -4,7 +4,7 @@ const Discord = require('discord.js')
 
 module.exports = {
     name: 'suggestion',
-    description: "Envoyer des suggestion au staff",
+    description: "Envoyer des suggestions au staff",
     subCommand: false,
     guildOnly: false,
     args: true,

@@ -2,7 +2,7 @@ const func = require('../addon/fonction')
 
 module.exports = {
     name: 'unmute',
-    description: "démute un jour dans tout les tchat du serveur",
+    description: "démute un jour dans tout les tchats du serveur",
     cat: 'Modération',
     guildOnly: true,
     args: true,

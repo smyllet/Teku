@@ -2,11 +2,11 @@ const func = require('../addon/fonction')
 
 module.exports = {
     name: 'bot-perm',
-    description: "Commande de gestion des permition pour le bot",
+    description: "Commande de gestion des permission pour le bot",
     subCommand: true,
     guildOnly: true,
     args: true,
-    usage: '<enable|disable|add|remove|list>',
+    usage: '<subcommand>',
     permition: [7,13],
     enable: true,
     execute(message,args) {

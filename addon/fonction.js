@@ -96,6 +96,8 @@ exports.convertDateRead = function (time)
 
 exports.log = function (type, data)
 {
+    
+
     now = new Date();
     if (type == 'err') {
         console.log('\x1b[37m[' + func.convertDate() + '] \x1b[31m[Erreur] \x1b[37m: ' + data)
