@@ -21,6 +21,7 @@ bot.on('ready', function () {
     bot.user.setActivity(config.botdesc)
     func.log('info','Le bot est connecté')
     autoRefreshUsersData()
+    autoClearTchat()
 })
 bot.on('error', function (e) {
     func.log('err', e)
@@ -73,6 +74,15 @@ function autoRefreshUsersData() {
         func_db.refreshUserData(null,db,member[1])
     }
     setTimeout(autoRefreshUsersData,900000)
+}
+
+//Auto Clear Message in salon
+function autoClearTchat() {
+    var date = new Date()
+    if(date.getHours() === 21 && date.getMinutes() === 44){
+        console.log('Cleaaaaaaaaaar')
+    }
+    setTimeout(autoClearTchat,30000)
 }
 
 //List commande

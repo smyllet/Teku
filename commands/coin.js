@@ -5,8 +5,6 @@ module.exports = {
     description: "pile ou face ?",
     guildOnly: true,
     args: false,
-    usage: '',
-    aliases: [],
     permition: [1],
     enable: true,
     execute(message,args,db,permitionUser) {
