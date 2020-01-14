@@ -1,14 +1,11 @@
 const func = require('../addon/fonction.js') //fonction
-var request = require('request')
-const fs = require('fs')
-const cheerio = require('cheerio')
 
 module.exports = {
     name: 'test',
     description: 'Command de test',
-    guildOnly: false,
+    guildOnly: true,
     args: false,
-    usage: '<oeuvre>',
+    usage: '',
     aliases: ['t','te'],
     permition: [13],
     enable: false,

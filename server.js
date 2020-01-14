@@ -79,10 +79,16 @@ function autoRefreshUsersData() {
 //Auto Clear Message in salon
 function autoClearTchat() {
     var date = new Date()
-    if(date.getHours() === 21 && date.getMinutes() === 44){
-        console.log('Cleaaaaaaaaaar')
+    if(((date.getHours() === 12) || (date.getHours() === 0)) && date.getMinutes() === 0){
+        for(chan of config.clearChannel)
+        {
+            channel = bot.guilds.find(key => key.id === config.guildId).channels.find(key => key.id === chan)
+            channel.bulkDelete(100,true)
+                .then(deleted => func.log('info',`${deleted.size} message on été suprimé du salon ${channel.name}`))
+                .catch(err => func.log('err',`autoClearTchat : ${err}`))
+        }
     }
-    setTimeout(autoClearTchat,30000)
+    setTimeout(autoClearTchat,60000)
 }
 
 //List commande

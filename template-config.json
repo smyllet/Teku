@@ -5,6 +5,7 @@
     "guildId": "",
     "staffZoneId": "",
     "reportChannelId": "",
+    "clearChannel": [""],
 
     "database":
     {

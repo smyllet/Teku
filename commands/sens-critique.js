@@ -6,7 +6,7 @@ const Discord = require('discord.js')
 
 module.exports = {
     name: 'sens-critique',
-    description: 'Command de test',
+    description: 'Optenir une fiche complète sur une oeuvre',
     guildOnly: false,
     args: true,
     usage: '<ALL|FILM|SERIE|JEU|LIVRE|BD|MORCEAU|ALBUM> <oeuvre>',
