@@ -79,12 +79,11 @@ function autoRefreshUsersData() {
 //Auto Clear Message in salon
 function autoClearTchat() {
     var date = new Date()
-    if(((date.getHours() === 12) || (date.getHours() === 0)) && date.getMinutes() === 0){
+    if(((date.getHours() === 12) || (date.getHours() === 0)) && (date.getMinutes() === 0)){
         for(chan of config.clearChannel)
         {
             channel = bot.guilds.find(key => key.id === config.guildId).channels.find(key => key.id === chan)
             channel.bulkDelete(100,true)
-                .then(deleted => func.log('info',`${deleted.size} message on été suprimé du salon ${channel.name}`))
                 .catch(err => func.log('err',`autoClearTchat : ${err}`))
         }
     }
@@ -131,6 +130,7 @@ bot.on("guildMemberAdd", async member =>
 {
     func_db.refreshUserData(null,db,member)
     func.log('info',`${member.user.tag} a rejoin le serveur`)
+    member.addRole(member.guild.roles.find(grade => grade.name == 'Membre'))
 })
 bot.on("guildMemberRemove", async member =>
 {

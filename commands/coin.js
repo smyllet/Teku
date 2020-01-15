@@ -9,7 +9,7 @@ module.exports = {
     enable: true,
     execute(message,args,db,permitionUser) {
         let coin = Math.floor(Math.random() * Math.floor(2))
-        if (coin == 1) message.channel.send(':yellow_circle: Pile !')
-        else message.channel.send(':yellow_circle: Face !')
+        if (coin == 1) message.channel.send('Pile !')
+        else message.channel.send('Face !')
     }
 }
