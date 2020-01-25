@@ -8,11 +8,16 @@ const config = require('./config.json') //config
 
 const func = require('./addon/fonction') //fonction
 const func_db = require('./addon/func-database')
+
 //---Variable---//
-const bot = new Discord.Client();
+const bot = new Discord.Client()
 bot.commands = new Discord.Collection()
 bot.subCommands = new Discord.Collection()
 bot.gradeList = new Discord.Collection()
+bot.radioList = new Discord.Collection()
+bot.radioActu = new Discord.Collection()
+
+global.soundInfo = {}
 
 //-------init serveur-------//
 console.clear() //Effacer console
@@ -25,6 +30,10 @@ bot.on('ready', function () {
 })
 bot.on('error', function (e) {
     func.log('err', e)
+})
+
+bot.on('debut', function (d) {
+    func.log('warn', d)
 })
 
 bot.login(config.token).catch(err => func.log('err',err))
@@ -123,6 +132,23 @@ bot.gradeList
     .set(11,'Rédacteur')
     .set(13,'Administrateur')
 
+//radio Actuelle
+soundInfo.status = 'off'
+soundInfo.volume = 0.08
+soundInfo.connection = null
+soundInfo.dispatcher = null
+soundInfo.musicNow = null
+soundInfo.ytbSounds = []
+
+//Liste radio
+bot.radioList
+    .set('NRJ',{title: 'NRJ', description: 'NRJ Hit Music Only !', url: 'http://cdn.nrjaudio.fm/audio1/fr/30001/mp3_128.mp3?origine=fluxradios', logo:'https://www.stickpng.com/assets/images/584826e6cef1014c0b5e49da.png'})
+    .set('RIRE & CHANSONS',{title: 'Rire & Chansons', description: 'La radio du rire', url: 'http://cdn.nrjaudio.fm/audio1/fr/30401/mp3_128.mp3?origine=fluxradios', logo:'https://upload.wikimedia.org/wikipedia/fr/c/cd/Rire_%26_Chansons_logo_2012.png'})
+    .set('FRANCE INFO',{title: 'France Info', description: 'Et tout est plus clair', url: 'http://direct.franceinfo.fr/live/franceinfo-midfi.mp3', logo:'https://upload.wikimedia.org/wikipedia/fr/thumb/1/18/France_Info_-_2008.svg/600px-France_Info_-_2008.svg.png'})
+    .set('VOLTAGE',{title: 'Voltage', description: 'Les Hits d\'hier et d\'aujourd\'hui', url: 'http://start-voltage.ice.infomaniak.ch/start-voltage-high.mp3', logo: 'https://radioenlignefrance.com/assets/image/radio/180/voltage.jpg'})
+    .set('SKYROCK',{title :'Skyrock', description: 'Premier sur le rap', url: 'http://icecast.skyrock.net/s/natio_aac_96k', logo: 'https://upload.wikimedia.org/wikipedia/fr/thumb/5/57/Logo_Skyrock_2011.svg/1920px-Logo_Skyrock_2011.svg.png'})
+    .set('CHERIE FM',{title: 'Chérie FM', description: 'La Plus Belle Musique', url: 'http://cdn.nrjaudio.fm/audio1/fr/30201/mp3_128.mp3?origine=fluxradios', logo: 'https://upload.wikimedia.org/wikipedia/commons/e/ec/Ch%C3%A9rie_FM_logo_2012.png'})
+    .set('ED92',{title: 'ED92', description: 'Musique Disneyland', url: 'http://listen.shoutcast.com/ed92radio', logo:'https://www.ed92.org/wp-content/uploads/2019/12/Fichier-3.png'})
 
 //----------Partie principal----------//
 //---Nouveau membre---//
@@ -154,11 +180,50 @@ bot.on("voiceStateUpdate", async (oldMember, newMember) => {
    
         newMember.removeRole(VocalConnect)
         func.log('vocal',`${newMember.user.tag} c'est déconnecté`)
+
+        if(newMember.user.bot)
+        {
+            soundInfo.connection = null
+            soundInfo.dispatcher = null
+            soundInfo.status = 'off'
+            soundInfo.musicNow = null
+            soundInfo.volume = 0.08
+            soundInfo.ytbSounds = []
+        }
+        else if(soundInfo.connection)
+        {
+            if(soundInfo.connection.channel.members.array().length <= 1)
+            {
+                setTimeout(function(){
+                    if(soundInfo.connection && (soundInfo.connection.channel.members.array().length <= 1)) soundInfo.connection.disconnect()
+                },10000)
+            }
+        }
    
     } else if((oldUserChannel !== undefined) && (newUserChannel !== undefined) && (oldUserChannel != newUserChannel)){
 
         func.log('vocal',`${newMember.user.tag} c'est déplacé du salon ${oldUserChannel.name} au salon ${newUserChannel.name}`)
 
+        if(newMember.user.bot)
+        {
+            chan = soundInfo.connection.channel
+            if((chan.members.array().length <= 1) || (chan.name.toLowerCase().includes('afk')))
+            {
+                setTimeout(function(){
+                    if(soundInfo.connection && (soundInfo.connection.channel.members.array().length <= 1)) soundInfo.connection.disconnect()
+                },10000)
+            }
+        }
+        else if(soundInfo.connection)
+        {
+            chan = soundInfo.connection.channel
+            if(chan.members.array().length <= 1)
+            {
+                setTimeout(function(){
+                    if(soundInfo.connection && (soundInfo.connection.channel.members.array().length <= 1)) soundInfo.connection.disconnect()
+                },10000)
+            }
+        }
     }
 })
 

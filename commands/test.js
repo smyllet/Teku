@@ -8,8 +8,9 @@ module.exports = {
     usage: '',
     aliases: ['t','te'],
     permition: [13],
-    enable: false,
+    enable: true,
     execute(message,args) {
-        
+        console.log(soundInfo.connection.playStream)
+        console.log(soundInfo.connection.play)
     }
 }
