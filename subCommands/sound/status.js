@@ -8,7 +8,7 @@ module.exports = {
     guildOnly: true,
     args: false,
     usage: '',
-    permition: [2],
+    permition: [1],
     enable: true,
     async execute(message,args,db) {
         const {radioList} = message.client
@@ -20,13 +20,17 @@ module.exports = {
         if(soundInfo.status == 'off') status = 'Hors ligne'
         else status = soundInfo.status
 
+        if(soundInfo.radioBack == null) rb = 'Aucune'
+        else rb = radioList.get(soundInfo.radioBack.toUpperCase()).title
+
         musicStatus = new Discord.RichEmbed()
             .setColor('#646464')
             .setTitle('Dynivers Musique')
             .setTimestamp()
             .setFooter('Dynivers, status musique')
             .addField('Status', status, true)
-            .addField('Volume',soundInfo.volume*1000 + "%", true)
+            .addField('Volume',soundInfo.volume*100 + "%", true)
+            .addField('Radio automatique',rb,true)
             .addField('Salon vocal',salon,false)
         
         if(soundInfo.status == 'radio')

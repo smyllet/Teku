@@ -10,9 +10,10 @@ module.exports = {
     args: true,
     usage: '<lien youtube>',
     aliases: ['r'],
-    permition: [7],
+    permition: [1],
     enable: true,
     async execute(message,args,db) {
+        const {radioList} = message.client
         needConnect = false
 
         const { voiceChannel } = message.member
@@ -44,12 +45,25 @@ module.exports = {
                     soundInfo.dispatcher = null
                     play(soundInfo.ytbSounds[0].url)
                 }
-                else soundInfo.connection.disconnect()
-            })
-            .on('debug', debug => {
-                console.log(debug)
+                else
+                {
+                    if (soundInfo.radioBack != null)
+                    {
+                        radio = radioList.get(soundInfo.radioBack.toUpperCase())
+                        soundInfo.status = 'radio'
+                        soundInfo.dispatcher = null
+                        soundInfo.dispatcher = soundInfo.connection.playStream(radio.url, {passes: 5})
+                        soundInfo.dispatcher.setVolumeLogarithmic(soundInfo.volume)
+                        soundInfo.musicNow = radio.title
+                    }
+                    else
+                    {
+                        soundInfo.connection.disconnect()
+                    }
+                }
             })
             .on('error', error => {
+                if(soundInfo.status != 'youtube') return
                 func.log('err',`erreur : ${error}`)
                 try
                 {

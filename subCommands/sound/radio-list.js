@@ -9,7 +9,7 @@ module.exports = {
     args: false,
     usage: '',
     aliases: ['rlist'],
-    permition: [2],
+    permition: [1],
     enable: true,
     async execute(message,args,db) {
         const {radioList} = message.client

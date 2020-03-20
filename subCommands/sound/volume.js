@@ -8,7 +8,7 @@ module.exports = {
     args: true,
     usage: '<Volume entre 1 et 100>',
     aliases: ['v'],
-    permition: [2],
+    permition: [1],
     enable: true,
     async execute(message,args,db) {
         if(!soundInfo.connection)

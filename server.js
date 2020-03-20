@@ -138,6 +138,7 @@ soundInfo.volume = 0.08
 soundInfo.connection = null
 soundInfo.dispatcher = null
 soundInfo.musicNow = null
+soundInfo.radioBack = null
 soundInfo.ytbSounds = []
 
 //Liste radio
@@ -148,6 +149,7 @@ bot.radioList
     .set('VOLTAGE',{title: 'Voltage', description: 'Les Hits d\'hier et d\'aujourd\'hui', url: 'http://start-voltage.ice.infomaniak.ch/start-voltage-high.mp3', logo: 'https://radioenlignefrance.com/assets/image/radio/180/voltage.jpg'})
     .set('SKYROCK',{title :'Skyrock', description: 'Premier sur le rap', url: 'http://icecast.skyrock.net/s/natio_aac_96k', logo: 'https://upload.wikimedia.org/wikipedia/fr/thumb/5/57/Logo_Skyrock_2011.svg/1920px-Logo_Skyrock_2011.svg.png'})
     .set('CHERIE FM',{title: 'Chérie FM', description: 'La Plus Belle Musique', url: 'http://cdn.nrjaudio.fm/audio1/fr/30201/mp3_128.mp3?origine=fluxradios', logo: 'https://upload.wikimedia.org/wikipedia/commons/e/ec/Ch%C3%A9rie_FM_logo_2012.png'})
+    .set('GENERATION',{title: 'Génération', description: 'Hip-hop soul radio', url: 'http://generationfm.ice.infomaniak.ch/generationfm-high.mp3', logo:'https://fr.wikipedia.org/wiki/G%C3%A9n%C3%A9rations_(radio)#/media/Fichier:G%C3%A9n%C3%A9rations.jpg'})
     .set('ED92',{title: 'ED92', description: 'Musique Disneyland', url: 'http://listen.shoutcast.com/ed92radio', logo:'https://www.ed92.org/wp-content/uploads/2019/12/Fichier-3.png'})
 
 //----------Partie principal----------//
@@ -188,6 +190,7 @@ bot.on("voiceStateUpdate", async (oldMember, newMember) => {
             soundInfo.status = 'off'
             soundInfo.musicNow = null
             soundInfo.volume = 0.08
+            soundInfo.radioBack = null
             soundInfo.ytbSounds = []
         }
         else if(soundInfo.connection)

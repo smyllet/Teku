@@ -7,7 +7,7 @@ module.exports = {
     guildOnly: true,
     args: false,
     usage: '',
-    permition: [7],
+    permition: [1],
     enable: true,
     async execute(message,args,db) {
         if(!soundInfo.connection)

@@ -8,7 +8,7 @@ module.exports = {
     args: false,
     usage: '',
     aliases: ['s'],
-    permition: [7],
+    permition: [1],
     enable: true,
     async execute(message,args,db) {
         if(!soundInfo.connection)

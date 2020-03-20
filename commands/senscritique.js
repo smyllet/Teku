@@ -10,7 +10,7 @@ module.exports = {
     args: true,
     usage: '[-film *ou* -serie *ou* -jeu *ou* -livre *ou* -bd *ou* -morceau *ou* -album (si vide, recherche dans toutes les catégories)] <oeuvre>',
     aliases: ['sc'],
-    permition: [2],
+    permition: [1],
     enable: true,
     async execute(message,args,db,permitionUser) {
         //- - - - - Initialisation des variable - - - - -//
