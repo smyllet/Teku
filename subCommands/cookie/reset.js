@@ -16,16 +16,29 @@ module.exports = {
         if(args[0]) cookies = parseInt(args[0]) 
         else cookies = 0
 
-        db.query(`UPDATE Users SET cookies = ${cookies} WHERE id_discord_user = ${message.author.id}`, function(err,result, fields)
+        db.query(`SELECT u.id_user, u.cookies FROM Users u WHERE id_discord_user = ${message.author.id}`, function(err,result, fields)
         {
             if(err)
             {
                 func.log('err',err)
-                if(message) message.channel.send(`Erreur lors de la supression des cookies'`)
+                if(message) message.channel.send(`Erreur lors de l'identification de l'utilisateur`)
             }
             else
             {
-                message.channel.send(`Votre nombre de cookie à bien été réinitialisé\n:cookie: Cookie(s) : ${cookies}`)
+                if(cookies>result[0].cookies) return message.channel.send("Vous ne pouvez pas réinitialiser votre compteur au dessus du nombre de cookie posédé")
+                
+                db.query(`UPDATE Users SET cookies = ${cookies} WHERE id_discord_user = ${message.author.id}`, function(err,result, fields)
+                {
+                    if(err)
+                    {
+                        func.log('err',err)
+                        if(message) message.channel.send(`Erreur lors de la supression des cookies'`)
+                    }
+                    else
+                    {
+                        message.channel.send(`Votre nombre de cookie à bien été réinitialisé\n:cookie: Cookie(s) : ${cookies}`)
+                    }
+                })
             }
         })
     }
