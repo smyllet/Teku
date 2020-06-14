@@ -1,4 +1,6 @@
 const func = require('../addon/fonction.js') //fonction
+const yaml = require('yaml')
+const fs = require('fs') //système de gestion de fichier
 
 module.exports = {
     name: 'test',
@@ -10,7 +12,11 @@ module.exports = {
     permition: [13],
     enable: true,
     execute(message,args) {
-        console.log(soundInfo.connection.playStream)
-        console.log(soundInfo.connection.play)
+        file = yaml.parse(fs.readFileSync('/data/dynivers-server/Teku/Development/whitelist.yml', 'utf8'))
+        console.log(file)
+        file.whitelist.push("hey")
+
+        fs.writeFileSync('/data/dynivers-server/Teku/Development/whitelist.yml',yaml.stringify(file))
+        
     }
 }

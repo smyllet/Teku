@@ -16,6 +16,7 @@
     "request": "^2.88.0",
     "spotify-web-api-node": "^4.0.0",
     "sync": "^0.2.5",
+    "yaml": "^1.8.3",
     "youtube-playlist": "^1.0.2",
     "ytdl-core": "^1.0.7"
   }

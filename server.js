@@ -3,6 +3,7 @@
 const fs = require('fs') //système de gestion de fichier
 const Discord = require('discord.js') //discord
 var mysql = require('mysql')
+const yaml = require('yaml')
 
 const config = require('./config.json') //config
 
@@ -164,6 +165,37 @@ bot.on("guildMemberRemove", async member =>
 {
     func_db.refreshUserData(null,db,member,func.convertDate())
     func.log('info',`${member.user.tag} a quité le serveur`)
+    db.query(`SELECT u.mc_pseudo, u.mc_lock FROM Users u WHERE u.id_discord_user = ${member.id}`, function(err,result, fields) {
+        if(err)
+        {
+            func.log('err',err)
+            return func.log("err","Une erreur c'est produite lors de la vérification de vos information, veuillez réessayer ou contacter un administrateur")
+        }
+        else
+        {
+            if ( ( result == ([] || null) ) || (result.length > 1) || result[0] == undefined) func.log('err', "Erreur utilisateur inéxistant")
+            else if(result[0].mc_pseudo != null)
+            {
+                try
+                {
+                    let file = yaml.parse(fs.readFileSync(config.minecraft.whitelistFile, 'utf8'))
+                    for(let i=0; i<file.globalWhitelist.whitelist.length; i++)
+                    {
+                        if(file.globalWhitelist.whitelist[i] == result[0].mc_pseudo)
+                        {
+                            file.globalWhitelist.whitelist.splice(i,1)
+                        }
+                    }
+                    fs.writeFileSync(config.minecraft.whitelistFile,yaml.stringify(file))
+                    func.log("info",`Le joueur ${result[0].mc_pseudo} à bien été retiré de la whitelist`)
+                }
+                catch(e)
+                {
+                    func.log("err","Erreur lors de l'extraction de la whitelist")
+                }
+            }
+        }
+    })
 })
 
 //---Pas de micro---//
