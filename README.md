@@ -1,2 +1,2 @@
-## Dynivers - Teku (bot discord)
-Bot du serveur discord Dynivers
+# Teku
+Bot de dynivers et son interface web
