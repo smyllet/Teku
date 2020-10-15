@@ -2,6 +2,9 @@
 const https = require("https")
 const fs = require('fs')
 
+// Chargement Config
+const config = require('./config.json')
+
 // Import express app
 const app = require("./expressapp")
 
@@ -22,3 +25,7 @@ server.on("listening", () => {
         : 'port ' + addr.port;
     console.log("Serveur prêt et à l'écoute sur le port : " + bind)
 })
+
+// Connection à Discord
+const bot = require("./discordbot")
+bot.login(config.discord.token).catch(err => console.log("Erreur lors de la connexion à discord : " + err.toString()))
