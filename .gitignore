@@ -4,3 +4,4 @@ simul.js
 whitelist.yml
 node_modules/
 .idea/
+ssl/
