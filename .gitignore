@@ -1,7 +1,5 @@
 config.json
 simul.js
 *.log
-whitelist.yml
 node_modules/
 .idea/
-ssl/
