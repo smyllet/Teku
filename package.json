@@ -9,5 +9,7 @@
   },
   "author": "Smyllet",
   "license": "ISC",
-  "dependencies": {}
+  "dependencies": {
+    "discord.js": "^12.4.1"
+  }
 }

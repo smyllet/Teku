@@ -1,1 +1,10 @@
-{}
+{
+  "bot":
+  {
+    "discord":
+    {
+      "activity": "",
+      "token": "secret token"
+    }
+  }
+}
