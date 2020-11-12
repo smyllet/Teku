@@ -4,7 +4,25 @@
     "discord":
     {
       "activity": "",
-      "token": "secret token"
+      "token": "secret token",
+      "guildId": "",
+      "channels":
+      {
+        "text":
+        {
+          "id du channel":
+          {
+            "name": "nom du salon (uniquement à titre indicatif pour la config)",
+            "vocal-only": true,
+            "autoClear":
+            {
+              "active": true,
+              "delay": 3600000,
+              "notRemoveFirstMessage": true
+            }
+          }
+        }
+      }
     }
   }
 }
