@@ -9,7 +9,7 @@ function clearTchat(idChannel)
     let channel = guild.channels.cache.find(key => key.id === idChannel)
     channel.messages.fetch()
         .then((messages) => {
-            if(channels[idChannel].notRemoveFirstMessage) messages.delete(messages.firstKey()) // Suppression du premiers message des messages à supprimer si cela est défini dans les params
+            if(channels[idChannel].notRemoveFirstMessage) messages.delete(messages.lastKey()) // Suppression du premiers message des messages à supprimer si cela est défini dans les params
             if(messages.size > 0)
             {
                 let count = 0

@@ -13,7 +13,6 @@
           "id du channel":
           {
             "name": "nom du salon (uniquement à titre indicatif pour la config)",
-            "vocal-only": true,
             "autoClear":
             {
               "active": true,
