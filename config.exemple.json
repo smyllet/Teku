@@ -21,6 +21,13 @@
             }
           }
         }
+      },
+      "roles":
+      {
+        "vocalConnect":
+        {
+          "id": "id du role pour les membres connecté en vocal"
+        }
       }
     }
   }
