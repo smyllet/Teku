@@ -6,6 +6,7 @@
       "activity": "",
       "token": "secret token",
       "guildId": "",
+      "commandPrefix": "!",
       "channels":
       {
         "text":

@@ -1,9 +1,9 @@
-config = require('../config.json')
+config = require('../../config.json')
 
 channels = {}
 let bot;
 
-function clearTchat(idChannel)
+async function clearTchat(idChannel)
 {
     let guild = bot.guilds.cache.find(key => key.id === config.bot.discord.guildId) // Récupération du serveur Discord
     let channel = guild.channels.cache.find(key => key.id === idChannel)
