@@ -1,11 +1,11 @@
 // - - - Node Modules - - - //
 const Discord = require('discord.js')
 
-// Discord Bot Module
+// - - - Discord Bot Module - - - //
 const autoClearTextChannels = require('./Discord/discordBotModule/autoClearTextChannels')
 const vocalConnectManager = require('./Discord/discordBotModule/vocalConnectManager')
 
-// Chargement de class
+// - - - Chargement de class - - - //
 const CommandManager = require('./Discord/Class/CommandManager')
 
 // - - - Chargement Config - - - //
@@ -14,7 +14,7 @@ const config = require('./config.json')
 // - - - Instantiation du bot - - - //
 const dBot = new Discord.Client()
 
-// - - - Instantiation des commandes
+// - - - Instantiation des commandes - - - //
 const commandManager = new CommandManager()
 
 // - - - Connexion à Discord - - - //
@@ -28,7 +28,7 @@ dBot.on('ready', () => {
 
     autoClearTextChannels.init(dBot) // Initialisation de l'auto clear
     vocalConnectManager.init(dBot) // Initialisation du vocal connect manager
-    commandManager.autoAddAllCommand()
+    commandManager.autoAddAllCommand() // Initialisation des commandes
 })
 
 // En cas d'erreur

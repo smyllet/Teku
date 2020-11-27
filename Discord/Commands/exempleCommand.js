@@ -15,7 +15,7 @@ module.exports = {
                     enable: true,
                     argsRequire: true,
                     role: "everyone",
-                    execute(message, args) {
+                    async execute(message, args) {
                         // commande à exécuté
                     }
                 },
@@ -27,7 +27,7 @@ module.exports = {
                     enable: false,
                     argsRequire: true,
                     role: "everyone",
-                    execute(message, args) {
+                    async execute(message, args) {
                         // commande a exécuté
                     }
                 }
