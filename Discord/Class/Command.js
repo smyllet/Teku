@@ -2,7 +2,7 @@ const config = require('../../config.json')
 
 class Command
 {
-    constructor(name, description, syntax, enable, argsRequire, role, execute, subCommands)
+    constructor(name, parent, description, syntax, enable, argsRequire, role, execute, subCommands)
     {
         let roleId
         if(config.bot.discord.roles[role]) roleId = config.bot.discord.roles[role].id
@@ -10,6 +10,7 @@ class Command
         else roleId = null
 
         this.name = name
+        this.parent = parent
         this.description = description
         this.syntax = syntax
         this.enable = enable
@@ -28,6 +29,17 @@ class Command
     {
         if(this.role === 0) return true
         else return !!member.roles.cache.find(role => role.id === this.role)
+    }
+
+    getFullName()
+    {
+        if(this.parent) return this.parent + " " + this.name
+        else return this.name
+    }
+
+    getSyntax()
+    {
+        return config.bot.discord.commandPrefix + this.syntax
     }
 }
 

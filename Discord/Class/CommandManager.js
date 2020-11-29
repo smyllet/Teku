@@ -25,6 +25,7 @@ class CommandManager
                     {
                         subCommands.addCommand(
                             new Command(subCommand.name,
+                                command.name,
                                 subCommand.description,
                                 subCommand.syntax,
                                 subCommand.enable,
@@ -42,7 +43,7 @@ class CommandManager
             if(command.enable)
             {
                 this.addCommand(
-                    new Command(command.name,
+                    new Command(command.name, null,
                         command.description,
                         command.syntax,
                         command.enable,
@@ -70,9 +71,9 @@ class CommandManager
     }
 
     // Obtenir une commande et des arguments à partir d'un message Discord
-    getCommandAndArgsFromMessage(message)
+    getCommandAndArgsFromMessageText(message)
     {
-        let args = message.content.slice(config.bot.discord.commandPrefix.length).split(/ +/)
+        let args = message.slice(config.bot.discord.commandPrefix.length).split(/ +/)
         let name = args.shift().toLowerCase()
         let command = this.commands[name]
 
@@ -88,6 +89,16 @@ class CommandManager
             else return {command : command, args : args}
         }
         else return null
+    }
+
+    getCommandsList()
+    {
+        let commandsList = []
+        for (let [key, command] of Object.entries(this.commands))
+        {
+            commandsList.push(command)
+        }
+        return commandsList
     }
 
 }

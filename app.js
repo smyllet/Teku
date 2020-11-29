@@ -4,6 +4,7 @@ const Discord = require('discord.js')
 // - - - Discord Bot Module - - - //
 const autoClearTextChannels = require('./Discord/discordBotModule/autoClearTextChannels')
 const vocalConnectManager = require('./Discord/discordBotModule/vocalConnectManager')
+const transfObject = require('./Discord/discordBotModule/transfObject')
 
 // - - - Chargement de class - - - //
 const CommandManager = require('./Discord/Class/CommandManager')
@@ -29,6 +30,7 @@ dBot.on('ready', () => {
     autoClearTextChannels.init(dBot) // Initialisation de l'auto clear
     vocalConnectManager.init(dBot) // Initialisation du vocal connect manager
     commandManager.autoAddAllCommand() // Initialisation des commandes
+    transfObject.addObject("commandManager", commandManager) // Stockage du commandManager pour la commande help
 })
 
 // En cas d'erreur
@@ -44,7 +46,7 @@ dBot.on('message', message =>
     if(message.content.startsWith(config.bot.discord.commandPrefix) && !message.author.bot) // Si les message commence par le prefix de commande et que ce n'est pas un bot
     {
         // si une command est retourné
-        let structure = commandManager.getCommandAndArgsFromMessage(message)
+        let structure = commandManager.getCommandAndArgsFromMessageText(message.content)
         if(structure)
         {
             let command = structure.command
@@ -59,7 +61,7 @@ dBot.on('message', message =>
                     // Exécuté la commande si toutes les conditions précédente sont réuni
                     command.execute(message, args).then(() => console.log(`Commande exécuté par ${message.member.user.tag} dans le salon ${message.channel.name}`))
                 }
-                else message.channel.send(`Syntax : ${command.syntax}`)
+                else message.channel.send(`Syntax : ${command.getSyntax()}`)
             }
             else message.channel.send("Vous n'avez pas la permission d'exécuter cette commande")
         }
