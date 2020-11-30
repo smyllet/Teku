@@ -5,6 +5,7 @@ const Discord = require('discord.js')
 const autoClearTextChannels = require('./Discord/discordBotModule/autoClearTextChannels')
 const vocalConnectManager = require('./Discord/discordBotModule/vocalConnectManager')
 const transfObject = require('./Discord/discordBotModule/transfObject')
+const logs = require('./Global/module/logs')
 
 // - - - Chargement de class - - - //
 const CommandManager = require('./Discord/Class/CommandManager')
@@ -19,13 +20,13 @@ const dBot = new Discord.Client()
 const commandManager = new CommandManager()
 
 // - - - Connexion à Discord - - - //
-dBot.login(config.bot.discord.token).catch(console.error)
+dBot.login(config.bot.discord.token).catch(err => logs.err(err.toString()))
 
 // - - - Discord Bot Event - - - //
 // Au démarrage du bot
 dBot.on('ready', () => {
     dBot.user.setPresence({activity: {name: config.bot.discord.activity}, status: "online"}).then()
-    console.log('Bot discord en ligne')
+    logs.info('Bot discord en ligne')
 
     autoClearTextChannels.init(dBot) // Initialisation de l'auto clear
     vocalConnectManager.init(dBot) // Initialisation du vocal connect manager
@@ -34,7 +35,7 @@ dBot.on('ready', () => {
 })
 
 // En cas d'erreur
-dBot.on('error', console.error)
+dBot.on('error', err => logs.err(err.toString()))
 
 // Lors d'un nouveau message
 dBot.on('message', message =>
@@ -59,7 +60,7 @@ dBot.on('message', message =>
                 if(command.isExecutable(args))
                 {
                     // Exécuté la commande si toutes les conditions précédente sont réuni
-                    command.execute(message, args).then(() => console.log(`Commande exécuté par ${message.member.user.tag} dans le salon ${message.channel.name}`))
+                    command.execute(message, args).then(() => logs.info(`Commande ${command.getFullName()} exécuté par ${message.member.user.tag} dans le salon ${message.channel.name}`))
                 }
                 else message.channel.send(`Syntax : ${command.getSyntax()}`)
             }
@@ -74,20 +75,20 @@ dBot.on('voiceStateUpdate', (oldState, newState) => {
     // Connexion à un salon vocal
     if(!oldState.channelID && newState.channelID)
     {
-        console.log(`${newState.member.user.tag} c'est connecté au salon ${newState.channel.name}`)
+        logs.info(`${newState.member.user.tag} c'est connecté au salon ${newState.channel.name}`)
         vocalConnectManager.addRoleToMember(newState.member)
     }
 
     // Déconnexion d'un salon vocal
     if(oldState.channelID && !newState.channelID)
     {
-        console.log(`${oldState.member.user.tag} c'est déconnecté du salon ${oldState.channel.name}`)
+        logs.info(`${oldState.member.user.tag} c'est déconnecté du salon ${oldState.channel.name}`)
         vocalConnectManager.removeRoleToMember(oldState.member)
     }
 
     // Déplacement d'un salon vocal à un autre
     if(oldState.channelID && newState.channelID && (oldState.channelID !== newState.channelID))
     {
-        console.log(`${oldState.member.user.tag} c'est déplacé du salon ${oldState.channel.name} au salon ${newState.channel.name}`)
+        logs.info(`${oldState.member.user.tag} c'est déplacé du salon ${oldState.channel.name} au salon ${newState.channel.name}`)
     }
 })

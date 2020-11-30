@@ -1,4 +1,5 @@
-config = require('../../config.json')
+const logs = require("../../Global/module/logs");
+const config = require('../../config.json')
 
 channels = {}
 let bot;
@@ -15,17 +16,17 @@ async function clearTchat(idChannel)
                 let count = 0
 
                 messages.forEach(message => {
-                    message.delete({timeout: 0, reason: "Nettoyage du salon " + channel.name}).catch(console.error)
+                    message.delete({timeout: 0, reason: "Nettoyage du salon " + channel.name}).catch(err => logs.err(err.toString()))
                     count++
                 })
 
-                console.log(`Le salon ${channel.name} à été nettoyé, ${count} message(s) supprimé`)
+                logs.info(`Le salon ${channel.name} à été nettoyé, ${count} message(s) supprimé`)
             }
 
             if(channels[idChannel].timeout != null) clearTimeout(channels[idChannel].timeout) // Annulé le timeout en cours si il y en a un
             channels[idChannel].timeout = null
         })
-        .catch(console.error)
+        .catch(err => logs.err(err.toString()))
 }
 
 exports.init = (dBot) => {

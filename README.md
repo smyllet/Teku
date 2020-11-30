@@ -5,7 +5,7 @@ Bot de dynivers
 ### Commandes
 - [x] Ping
 - [x] Coin
-- [ ] Help
+- [x] Help
 - [ ] Report
 - [ ] Suggestion
 - [ ] SensCritique
