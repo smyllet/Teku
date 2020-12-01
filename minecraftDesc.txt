@@ -1,9 +1,0 @@
-Bienvenue sur le serveur Minecraft de Dynivers!
-Avant de rejoindre, voici les quelques informations que tu dois savoir :
- - Les différents modes de jeu se trouvent sur des serveurs séparés, ce qui signifie que chaque mode de jeu dispose de son propre chat. Cependant, tu peux communiquer avec les autres serveurs  en utilisant la commande /g <message à envoyé>
- - Pour revenir au serveur principal, il te suffit de faire la commande /hub
- - Toute action pouvant nuire au serveur ou à l'un de ses membres entrainera un ban du serveur Minecraft et possiblement du Discord
- - Le serveur est accessible à l'adresse dynivers.fr en version 1.15.2
- - Si tu rencontres un problème, n'hésite pas à demander de l'aide à un membre du staff ou aux autres joueurs, que ce soit directement sur le jeu ou dans le salon Minecraft du discord
-
-Amuse toi bien! :smile:

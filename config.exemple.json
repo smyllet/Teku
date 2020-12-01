@@ -1,0 +1,43 @@
+{
+  "bot":
+  {
+    "discord":
+    {
+      "activity": "",
+      "token": "secret token",
+      "guildId": "",
+      "commandPrefix": "!",
+      "channels":
+      {
+        "text":
+        {
+          "id du channel":
+          {
+            "name": "nom du salon (uniquement à titre indicatif pour la config)",
+            "autoClear":
+            {
+              "active": true,
+              "delay": 3600000,
+              "notRemoveFirstMessage": true
+            }
+          }
+        }
+      },
+      "roles":
+      {
+        "vocalConnect":
+        {
+          "id": "id du role pour les membres connecté en vocal"
+        },
+        "moderator":
+        {
+          "id": "id du role des modérateur"
+        },
+        "mute":
+        {
+          "id": "id du role pour les membres mute"
+        }
+      }
+    }
+  }
+}
