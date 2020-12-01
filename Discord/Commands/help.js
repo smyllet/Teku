@@ -5,7 +5,7 @@ const Discord = require('discord.js')
 module.exports = {
     name: "help",
     description: "Liste des commandes",
-    syntax: "help (command)",
+    syntax: "help (commande)",
     enable: true,
     argsRequire: false,
     role: "everyone",

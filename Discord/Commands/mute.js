@@ -23,7 +23,7 @@ module.exports = {
 
                     if(!member) return message.channel.send("Merci de mentionner le membre dont vous ne souhaitez plus lire les messages")
                     if(member.user.bot) return message.channel.send("Bien essayé, mais c'est non !")
-                    if(member === message.member) return message.channel.send("Alors, même si ça ferais très plaisir à tout le monde, on va quand même éviter")
+                    if(member === message.member) return message.channel.send("Alors, même si ça ferait très plaisir à tout le monde, on va quand même éviter")
                     if(member.roles.cache.has(role.id)) return message.channel.send("Désolé mais ce membre a déjà été réduit au silence")
 
                     member.roles.add(role)
@@ -45,8 +45,8 @@ module.exports = {
                     let member = message.mentions.members.first()
                     let role = message.guild.roles.cache.find(key => key.id === config.bot.discord.roles.mute.id)
 
-                    if(!member) return message.channel.send("Merci de mentionner le membre au quel vous voulez redonner la parole")
-                    if(!member.roles.cache.has(role.id)) return message.channel.send("Il semblerais que ce membre ai déjà la possibilité de s'exprimer")
+                    if(!member) return message.channel.send("Merci de mentionner le membre auquel vous voulez redonner la parole")
+                    if(!member.roles.cache.has(role.id)) return message.channel.send("Il semblerait que ce membre ait déjà la possibilité de s'exprimer")
                     if(member === message.member) return message.channel.send("Comment ? Pas compris désolé")
 
                     member.roles.remove(role)
@@ -79,7 +79,7 @@ module.exports = {
                     }
                     else
                     {
-                        message.channel.send(`Voici la liste des membres réduit au silence : \n - ${list.join('\n - ')}`)
+                        message.channel.send(`Voici la liste des membres réduits au silence : \n - ${list.join('\n - ')}`)
                     }
                 }
             }
