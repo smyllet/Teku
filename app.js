@@ -4,6 +4,7 @@ const Discord = require('discord.js')
 // - - - Discord Bot Module - - - //
 const autoClearTextChannels = require('./Discord/discordBotModule/autoClearTextChannels')
 const vocalConnectManager = require('./Discord/discordBotModule/vocalConnectManager')
+const memberRoleManager = require('./Discord/discordBotModule/memberRoleManager')
 const transfObject = require('./Discord/discordBotModule/transfObject')
 const logs = require('./Global/module/logs')
 
@@ -30,6 +31,7 @@ dBot.on('ready', () => {
 
     autoClearTextChannels.init(dBot) // Initialisation de l'auto clear
     vocalConnectManager.init(dBot) // Initialisation du vocal connect manager
+    memberRoleManager.init(dBot) // Initialisation du role membre manager
     commandManager.autoAddAllCommand() // Initialisation des commandes
     transfObject.addObject("commandManager", commandManager) // Stockage du commandManager pour la commande help
 })
@@ -91,4 +93,10 @@ dBot.on('voiceStateUpdate', (oldState, newState) => {
     {
         logs.info(`${oldState.member.user.tag} c'est déplacé du salon ${oldState.channel.name} au salon ${newState.channel.name}`)
     }
+})
+
+// Arrivé d'un membre sur le serveur
+dBot.on('guildMemberAdd', member => {
+    logs.info(`${member.user.tag} à rejoins le serveur`)
+    memberRoleManager.addRoleToMember(member)
 })

@@ -36,6 +36,10 @@
         "mute":
         {
           "id": "id du role pour les membres mute"
+        },
+        "membre":
+        {
+          "id": "id du role pour les membres"
         }
       }
     }
