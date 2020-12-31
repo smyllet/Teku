@@ -5,6 +5,7 @@ const Discord = require('discord.js')
 const autoClearTextChannels = require('./Discord/discordBotModule/autoClearTextChannels')
 const vocalConnectManager = require('./Discord/discordBotModule/vocalConnectManager')
 const memberRoleManager = require('./Discord/discordBotModule/memberRoleManager')
+const staffNotifManager = require('./Discord/discordBotModule/staffNotifManager')
 const transfObject = require('./Discord/discordBotModule/transfObject')
 const logs = require('./Global/module/logs')
 
@@ -32,6 +33,7 @@ dBot.on('ready', () => {
     autoClearTextChannels.init(dBot) // Initialisation de l'auto clear
     vocalConnectManager.init(dBot) // Initialisation du vocal connect manager
     memberRoleManager.init(dBot) // Initialisation du role membre manager
+    staffNotifManager.init(dBot) // Initialisation du staff notif manager
     commandManager.autoAddAllCommand() // Initialisation des commandes
     transfObject.addObject("commandManager", commandManager) // Stockage du commandManager pour la commande help
 })
@@ -99,4 +101,19 @@ dBot.on('voiceStateUpdate', (oldState, newState) => {
 dBot.on('guildMemberAdd', member => {
     logs.info(`${member.user.tag} à rejoins le serveur`)
     memberRoleManager.addRoleToMember(member)
+})
+
+dBot.on('guildMemberRemove', member => {
+    staffNotifManager.sendNotif(`${member.user.tag} a quitté le serveur`)
+})
+
+dBot.on("guildBanAdd", (guild, user) => {
+    guild.fetchBan(user).then(banInfo => {
+        let embed = new Discord.MessageEmbed()
+            .setColor('#d00a27')
+            .setTitle(`   Membre Banni   `)
+            .addField('Membre', user.tag)
+            .addField('raison', banInfo.reason)
+        staffNotifManager.sendNotif({embed: embed})
+    })
 })
