@@ -7,6 +7,7 @@ const vocalConnectManager = require('./Discord/discordBotModule/vocalConnectMana
 const memberRoleManager = require('./Discord/discordBotModule/memberRoleManager')
 const staffNotifManager = require('./Discord/discordBotModule/staffNotifManager')
 const transfObject = require('./Discord/discordBotModule/transfObject')
+const soundManager = require('./Discord/discordBotModule/soundManager')
 const logs = require('./Global/module/logs')
 
 // - - - Chargement de class - - - //
@@ -34,6 +35,7 @@ dBot.on('ready', () => {
     vocalConnectManager.init(dBot) // Initialisation du vocal connect manager
     memberRoleManager.init(dBot) // Initialisation du role membre manager
     staffNotifManager.init(dBot) // Initialisation du staff notif manager
+    soundManager.init(dBot) // Initialisation du sound manager
     commandManager.autoAddAllCommand() // Initialisation des commandes
     transfObject.addObject("commandManager", commandManager) // Stockage du commandManager pour la commande help
 })
@@ -81,6 +83,8 @@ dBot.on('voiceStateUpdate', (oldState, newState) => {
     {
         logs.info(`${newState.member.user.tag} c'est connecté au salon ${newState.channel.name}`)
         vocalConnectManager.addRoleToMember(newState.member)
+
+        soundManager.vocalMemberUpdate(newState.channel)
     }
 
     // Déconnexion d'un salon vocal
@@ -88,12 +92,17 @@ dBot.on('voiceStateUpdate', (oldState, newState) => {
     {
         logs.info(`${oldState.member.user.tag} c'est déconnecté du salon ${oldState.channel.name}`)
         vocalConnectManager.removeRoleToMember(oldState.member)
+
+        soundManager.vocalMemberUpdate(oldState.channel)
     }
 
     // Déplacement d'un salon vocal à un autre
     if(oldState.channelID && newState.channelID && (oldState.channelID !== newState.channelID))
     {
         logs.info(`${oldState.member.user.tag} c'est déplacé du salon ${oldState.channel.name} au salon ${newState.channel.name}`)
+
+        soundManager.vocalMemberUpdate(newState.channel)
+        soundManager.vocalMemberUpdate(oldState.channel)
     }
 })
 

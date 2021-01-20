@@ -41,7 +41,16 @@
         "membre":
         {
           "id": "id du role pour les membres"
+        },
+        "vip":
+        {
+          "id": "id du role vip"
         }
+      },
+      "music":
+      {
+        "defaultVolume": 16,
+        "autoDecoDelay": 120000
       }
     }
   }

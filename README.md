@@ -12,7 +12,7 @@ Bot de dynivers
 - [ ] Cookie
 - [ ] Minecraft
 - [x] Mute
-- [ ] Musique
+- [x] Musique
 
 ### Fonction
 - [x] Pas de micro
