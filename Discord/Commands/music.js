@@ -32,10 +32,10 @@ module.exports = {
 
                         if(!soundManager.isConnect()) await soundManager.connectToVocalChannel(message.member.voice.channel)
 
-                        soundManager.playYoutubeLink(url)
-
-                        soundManager.getInfoForYoutubeUrl(url).then(info => {
-                            message.channel.send(`Lecture de ${info.videoDetails.title}`)
+                        soundManager.playYoutubeLink(url).then(() => {
+                            soundManager.getInfoForYoutubeUrl(url).then(info => {
+                                message.channel.send(`Lecture de ${info.videoDetails.title}`)
+                            })
                         })
                     }
                 },

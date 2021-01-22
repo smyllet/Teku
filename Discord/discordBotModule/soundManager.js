@@ -2,7 +2,7 @@
 config = require('../../config.json')
 
 const logs = require('../../Global/module/logs')
-const ytdl = require('ytdl-core')
+const ytdl = require('ytdl-core-discord')
 
 voiceData = {}
 
@@ -38,12 +38,12 @@ exports.stopMusic = () => {
     }
 }
 
-exports.playYoutubeLink = (link) => {
+exports.playYoutubeLink = async (link) => {
     if(this.isConnect())
     {
         if(this.youtubeUrlIsValide(link))
         {
-            voiceData.connexion.play(ytdl(link, { quality: 'highestaudio' }))
+            voiceData.connexion.play(await ytdl(link), { type: 'opus'})
             this.setVolume(voiceData.volume)
         }
     }
@@ -106,6 +106,14 @@ exports.vocalMemberUpdate = (channel) => {
 }
 
 exports.haveMusic = () => {
-    return voiceData.connexion.dispatcher != null;
+    return voiceData.connexion.dispatcher != null
+}
+
+exports.isPaused = () => {
+    return voiceData.connexion.dispatcher && voiceData.connexion.dispatcher.paused
+}
+
+exports.pauseMusic = () => {
+    voiceData.connexion.dispatcher.pause(true)
 }
 
