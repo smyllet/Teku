@@ -76,7 +76,10 @@ exports.setVolume = (volume) => {
     if(this.isConnect())
     {
         voiceData.volume = volume
-        voiceData.connexion.dispatcher.setVolumeLogarithmic(volume/200)
+        if(this.haveMusic())
+        {
+            voiceData.connexion.dispatcher.setVolumeLogarithmic(volume/200)
+        }
     }
 }
 
