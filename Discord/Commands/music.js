@@ -32,10 +32,15 @@ module.exports = {
 
                         if(!soundManager.isConnect()) await soundManager.connectToVocalChannel(message.member.voice.channel)
 
-                        soundManager.playYoutubeLink(url).then(() => {
-                            soundManager.getInfoForYoutubeUrl(url).then(info => {
-                                message.channel.send(`Lecture de ${info.videoDetails.title}`)
-                            })
+                        let addResult = await soundManager.addToPlaylist(url)
+
+                        if(addResult) {
+                            if(soundManager.haveMusic()) return message.channel.send(`Ajout de "${addResult.title}" à la liste de lecture`)
+                        }
+                        else message.channel.send("Echec de l'ajout de la musique à la liste de lecture")
+                        if(addResult.url !== soundManager.getFirstMusic().url) message.channel.send(`Ajout de "${addResult.title}" à la liste de lecture`)
+                        soundManager.playYoutubeMusic().then(r => {
+                            if(r) message.channel.send(`Lecture de la musique "${r.title}"`)
                         })
                     }
                 },
@@ -97,6 +102,82 @@ module.exports = {
                         if(exVolume > volume) message.channel.send(`Le volume a été diminué de ${exVolume - volume}%, il est maintenant à ${volume}%`)
                         else if(exVolume < volume) message.channel.send(`Le volume a été augmenté de ${volume - exVolume}%, il est maintenant à ${volume}%`)
                         else message.channel.send(`Le volume est déjà à ${volume}%`)
+                    }
+                },
+            pause:
+                {
+                    name: "pause",
+                    description: "Mettre en pause la musique en cours de lecture",
+                    syntax: "music pause",
+                    enable: true,
+                    argsRequire: false,
+                    role: "vip",
+                    async execute(message) {
+                        if(!soundManager.isConnect()) return message.channel.send("Oups, il semblerais que le bot ne sois pas connecté")
+                        if(!message.member.voice.channel || !soundManager.isInChannel(message.member.voice.channel)) return message.channel.send('Seul les personnes connecté en vocal dans le même salon que le bot sont autorisé à mettre en pause la musique')
+                        if(soundManager.haveMusic()) {
+                            if(soundManager.isPaused())
+                            {
+                                message.channel.send("La musique est déjà en pause")
+                            }
+                            else {
+                                soundManager.pauseMusic().then((info) => message.channel.send(`Mise en pause de "${info.title}"`))
+                            }
+                        }
+                        else
+                        {
+                            message.channel.send("Aucune musique en cours de lecture")
+                        }
+                    }
+                },
+            resume:
+                {
+                    name: "resume",
+                    description: "reprendre la musique actuellement en pause",
+                    syntax: "music resume",
+                    enable: true,
+                    argsRequire: false,
+                    role: "vip",
+                    async execute(message) {
+                        if(!soundManager.isConnect()) return message.channel.send("Oups, il semblerais que le bot ne sois pas connecté")
+                        if(!message.member.voice.channel || !soundManager.isInChannel(message.member.voice.channel)) return message.channel.send('Seul les personnes connecté en vocal dans le même salon que le bot sont autorisé à relancer la musique')
+                        if(soundManager.haveMusic()) {
+                            if(soundManager.isPaused())
+                            {
+                                soundManager.resumeMusic().then((info) => message.channel.send(`Reprise de "${info.title}"`))
+                            }
+                            else message.channel.send("La musique n'est pas en pause")
+                        }
+                        else if(soundManager.isConnect() && soundManager.getFirstMusic())
+                        {
+                            soundManager.playYoutubeMusic().then(info => {
+                                if(info) message.channel.send(`Lecture de la musique "${info.title}"`)
+                            })
+                        }
+                        else
+                        {
+                            message.channel.send("Aucune musique à reprendre")
+                        }
+                    }
+                },
+            skip:
+                {
+                    name: "skip",
+                    description: "Passer à la musique suivante",
+                    syntax: "music skip",
+                    enable: true,
+                    argsRequire: false,
+                    role: "vip",
+                    async execute(message) {
+                        if(!soundManager.isConnect()) return message.channel.send("Oups, il semblerais que le bot ne sois pas connecté")
+                        if(!message.member.voice.channel || !soundManager.isInChannel(message.member.voice.channel)) return message.channel.send('Seul les personnes connecté en vocal dans le même salon que le bot sont autorisé à changer de musique')
+                        if(soundManager.haveMusic()) {
+                            soundManager.endMusic().then((next) => {
+                                if(next) message.channel.send(`Musique passé, lecture de "${next.title}"`)
+                                else message.channel.send(`Musique passé, aucune musique à lire dans la liste de lecture`)
+                            })
+                        }
+                        else message.channel.send("Aucune musique en cours de lecture")
                     }
                 }
         }

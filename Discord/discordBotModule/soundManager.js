@@ -16,6 +16,7 @@ exports.connectToVocalChannel = async (channel) => {
     await channel.join()
         .then(connection => {
             voiceData.connexion = connection
+            voiceData.playlist = []
             logs.info("Connexion au salon vocal " + channel.name)
         })
         .catch(error => {
@@ -28,6 +29,7 @@ exports.disconnect = () => {
     {
         voiceData.connexion.disconnect()
         delete voiceData.connexion
+        delete voiceData.playlist
     }
 }
 
@@ -38,15 +40,51 @@ exports.stopMusic = () => {
     }
 }
 
-exports.playYoutubeLink = async (link) => {
-    if(this.isConnect())
+exports.endMusic = async () => {
+    if(voiceData.connexion.dispatcher)
     {
-        if(this.youtubeUrlIsValide(link))
-        {
-            voiceData.connexion.play(await ytdl(link), { type: 'opus'})
-            this.setVolume(voiceData.volume)
-        }
+        let next = voiceData.playlist[1]
+        await voiceData.connexion.dispatcher.end()
+        return next
     }
+}
+
+
+exports.addToPlaylist = async (link) => {
+    let result = false
+    if(this.isConnect() && this.youtubeUrlIsValide(link))
+    {
+        await ytdl.getInfo(link).then(async info => {
+            let video = {}
+            video.title =  info.videoDetails.title
+            video.author = info.videoDetails.author
+            video.time = info.videoDetails.lengthSeconds
+            video.url = link
+            voiceData.playlist.push(video)
+            result = video
+        })
+    }
+    return result
+}
+
+exports.getFirstMusic = () => {
+    if(voiceData.playlist) return voiceData.playlist[0]
+    else return null
+}
+
+exports.playYoutubeMusic = async () => {
+    let result = null
+    if(this.isConnect() && !this.haveMusic())
+    {
+        await voiceData.connexion.play(await ytdl(voiceData.playlist[0].url), { type: 'opus'})
+        this.setVolume(voiceData.volume)
+        result = voiceData.playlist[0]
+        voiceData.connexion.dispatcher.on('finish', () => {
+            voiceData.playlist.shift()
+            if(voiceData.playlist.length > 0) this.playYoutubeMusic()
+        })
+    }
+    return result
 }
 
 exports.isConnect = () => {
@@ -66,10 +104,6 @@ exports.isInChannel = (channel) => {
 
 exports.youtubeUrlIsValide = (link) => {
     return (ytdl.validateURL(link) && ytdl.validateID(ytdl.getVideoID(link)))
-}
-
-exports.getInfoForYoutubeUrl = async (link) => {
-    return ytdl.getInfo(link)
 }
 
 exports.setVolume = (volume) => {
@@ -116,7 +150,12 @@ exports.isPaused = () => {
     return voiceData.connexion.dispatcher && voiceData.connexion.dispatcher.paused
 }
 
-exports.pauseMusic = () => {
-    voiceData.connexion.dispatcher.pause(true)
+exports.pauseMusic = async () => {
+    await voiceData.connexion.dispatcher.pause(true)
+    return voiceData.playlist[0]
 }
 
+exports.resumeMusic = async () => {
+    await voiceData.connexion.dispatcher.resume()
+    return voiceData.playlist[0]
+}
