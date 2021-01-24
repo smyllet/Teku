@@ -10,17 +10,13 @@ async function clearTchat(idChannel)
     let channel = guild.channels.cache.find(key => key.id === idChannel)
     channel.messages.fetch()
         .then((messages) => {
-            if(channels[idChannel].notRemoveFirstMessage) messages.delete(messages.lastKey()) // Suppression du premiers message des messages à supprimer si cela est défini dans les params
-            if(messages.size > 0)
+            let nb = messages.size
+            if(channels[idChannel].notRemoveFirstMessage) nb = messages.size - 1 // Suppression du premiers message des messages à supprimer si cela est défini dans les params
+            if(nb > 0)
             {
-                let count = 0
-
-                messages.forEach(message => {
-                    message.delete({timeout: 0, reason: "Nettoyage du salon " + channel.name}).catch(err => logs.err(err.toString()))
-                    count++
-                })
-
-                logs.info(`Le salon ${channel.name} à été nettoyé, ${count} message(s) supprimé`)
+                channel.bulkDelete(nb)
+                    .then(m => logs.info(`Le salon ${channel.name} à été nettoyé, ${m.size} message(s) supprimé`))
+                    .catch(error => logs.err(error))
             }
 
             if(channels[idChannel].timeout != null) clearTimeout(channels[idChannel].timeout) // Annulé le timeout en cours si il y en a un
