@@ -3,12 +3,13 @@ config = require('../../config.json')
 
 // Import module
 const soundManager = require('../discordBotModule/soundManager')
+const Discord = require('discord.js')
 
 
 module.exports = {
     name: "music",
     description: "Commande de gestion de la musique",
-    syntax: "music [play|stop|off|volume]",
+    syntax: "music [play|stop|off|volume|pause|resume|skip]",
     enable: true,
     argsRequire: false,
     role: "vip",
@@ -84,7 +85,7 @@ module.exports = {
                 {
                     name: "volume",
                     description: "Changer le volume de la musique",
-                    syntax: "music volume (volume souhaité de 1 à 100, par défaut à 16)",
+                    syntax: "music volume (volume souhaité de 1 à 100, par défaut à 20)",
                     enable: true,
                     argsRequire: true,
                     role: "vip",
@@ -178,6 +179,53 @@ module.exports = {
                             })
                         }
                         else message.channel.send("Aucune musique en cours de lecture")
+                    }
+                },
+            status:
+                {
+                    name: "status",
+                    description: "Obtenir les informations sur le bot",
+                    syntax: "music status",
+                    enable: true,
+                    argsRequire: false,
+                    role: "vip",
+                    async execute(message) {
+                        let embed = new Discord.MessageEmbed()
+                            .setTitle(`Teku - Musique`)
+
+                        if(soundManager.isConnect())
+                        {
+                            embed.setColor('#07396B')
+                            embed.addField("Status", "Connecté", true)
+                            embed.addField("Salon", soundManager.getChannel().name, true)
+                            if(soundManager.isInChannel(message.member.voice.channel))
+                            {
+                                embed.addField("Volume",soundManager.getVolume() + '%')
+
+                                embed.addField("En cours de lecture", (soundManager.haveMusic()) ? soundManager.getFirstMusic().title : "Aucune", true)
+                                embed.addField("En pause", (soundManager.isPaused()) ? "Oui" : "Non", true)
+
+                                let playlist = soundManager.getMusicPlaylist()
+                                if(playlist) {
+                                    let list = []
+                                    let reste = 0
+                                    playlist.forEach(video => {
+                                        if(list.length <= 10) list.push(` - ${video.title}`)
+                                        else reste++
+                                    })
+                                    if(reste > 0) list.push(`et ${reste} autre${(reste > 1) ? "s" : ""}`)
+                                    embed.addField("Playlist", list.join("\n"))
+                                }
+                            }
+                            else embed.setDescription("Vous devez être connecté dans le même salon que le bot pour obtenir la totalité des informations")
+                        }
+                        else
+                        {
+                            embed.setColor('#848484')
+                            embed.addField("Status", "Déconnecté")
+                        }
+
+                        await message.channel.send({embed:embed})
                     }
                 }
         }

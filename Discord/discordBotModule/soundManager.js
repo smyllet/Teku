@@ -159,3 +159,11 @@ exports.resumeMusic = async () => {
     await voiceData.connexion.dispatcher.resume()
     return voiceData.playlist[0]
 }
+
+exports.getChannel = () => {
+    if(voiceData.connexion) return voiceData.connexion.channel
+}
+
+exports.getMusicPlaylist = () => {
+    if(voiceData.playlist) return voiceData.playlist
+}
