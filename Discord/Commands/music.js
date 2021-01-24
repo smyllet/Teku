@@ -94,7 +94,8 @@ module.exports = {
                         if(!message.member.voice.channel || !soundManager.isInChannel(message.member.voice.channel)) return message.channel.send('Seul les personnes connecté en vocal dans le même salon que le bot sont autorisé à changer le volume de la musique')
 
                         let exVolume = soundManager.getVolume()
-                        let volume = args[0]
+
+                        let volume = Number(args[0])
 
                         if((volume < 0) || (volume > 100) || !Number.isInteger(volume)) return message.channel.send("Le volume fournie est invalide, il doit être entre 0% et 100%")
 
