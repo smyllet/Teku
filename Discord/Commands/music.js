@@ -96,7 +96,7 @@ module.exports = {
                         let exVolume = soundManager.getVolume()
                         let volume = args[0]
 
-                        if((volume < 0) || (volume > 100)) return message.channel.send("Le volume fournie est invalide, il doit être entre 0% et 100%")
+                        if((volume < 0) || (volume > 100) || !Number.isInteger(volume)) return message.channel.send("Le volume fournie est invalide, il doit être entre 0% et 100%")
 
                         soundManager.setVolume(volume)
 
