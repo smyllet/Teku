@@ -1,6 +1,6 @@
 {
   "name": "teku",
-  "version": "4.0.2",
+  "version": "4.0.3",
   "description": "Teku",
   "main": "app.js",
   "private": true,
@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@discordjs/opus": "^0.3.3",
-    "discord.js": "^12.4.1",
+    "discord.js": "^12.5.1",
     "ytdl-core-discord": "^1.2.5"
   }
 }

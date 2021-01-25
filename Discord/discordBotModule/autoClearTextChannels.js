@@ -8,14 +8,17 @@ async function clearTchat(idChannel)
 {
     let guild = bot.guilds.cache.find(key => key.id === config.bot.discord.guildId) // Récupération du serveur Discord
     let channel = guild.channels.cache.find(key => key.id === idChannel)
-    channel.messages.fetch()
+    channel.messages.fetch({limit: 100})
         .then((messages) => {
             let nb = messages.size
             if(channels[idChannel].notRemoveFirstMessage) nb = messages.size - 1 // Suppression du premiers message des messages à supprimer si cela est défini dans les params
             if(nb > 0)
             {
                 channel.bulkDelete(nb)
-                    .then(m => logs.info(`Le salon ${channel.name} à été nettoyé, ${m.size} message(s) supprimé`))
+                    .then(m => {
+                        logs.info(`Le salon ${channel.name} à été nettoyé, ${m.size} message(s) supprimé`)
+                        if(m.size === ((channels[idChannel].notRemoveFirstMessage) ? 99 : 100)) clearTchat(idChannel)
+                    })
                     .catch(error => logs.err(error))
             }
 
