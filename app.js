@@ -8,6 +8,7 @@ const memberRoleManager = require('./Discord/discordBotModule/memberRoleManager'
 const staffNotifManager = require('./Discord/discordBotModule/staffNotifManager')
 const transfObject = require('./Discord/discordBotModule/transfObject')
 const soundManager = require('./Discord/discordBotModule/soundManager')
+const creationManager = require('./Discord/discordBotModule/creationManager')
 const logs = require('./Global/module/logs')
 
 // - - - Chargement de class - - - //
@@ -73,6 +74,13 @@ dBot.on('message', message =>
             else message.channel.send("Vous n'avez pas la permission d'exécuter cette commande")
         }
         else message.channel.send(`Commande invalide`)
+    }
+
+    // Ajout création
+    if((message.channel.id === config.bot.discord.creation.channel) && message.content.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(config.bot.discord.creation.keyword)) {
+        creationManager.initCreationMessage(message).then(() => {
+            logs.info(`Détection d'une création de ${message.member.user.tag}`)
+        })
     }
 })
 

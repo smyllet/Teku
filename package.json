@@ -1,6 +1,6 @@
 {
   "name": "teku",
-  "version": "4.0.3",
+  "version": "4.1.0",
   "description": "Teku",
   "main": "app.js",
   "private": true,

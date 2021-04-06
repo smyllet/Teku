@@ -51,6 +51,12 @@
       {
         "defaultVolume": 16,
         "autoDecoDelay": 120000
+      },
+      "creation":
+      {
+        "channel": "",
+        "keyword": "[creation]",
+        "react": ["❤", "🤩", "🤯", "😕", "❔"]
       }
     }
   }

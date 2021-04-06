@@ -12,7 +12,7 @@ module.exports = {
     syntax: "music [play|stop|off|volume|pause|resume|skip]",
     enable: true,
     argsRequire: false,
-    role: "vip",
+    role: "everyone",
     subCommands:
         {
             play:
@@ -22,7 +22,7 @@ module.exports = {
                     syntax: "music play (lien youtube)",
                     enable: true,
                     argsRequire: true,
-                    role: "vip",
+                    role: "everyone",
                     async execute(message, args) {
                         if(!message.member.voice.channel) return message.channel.send("Seul les personnes connecté en vocal sont autorisé à jouer de la musique")
                         if(soundManager.isConnect() && !soundManager.isInChannel(message.member.voice.channel)) return message.channel.send("Désolé, mais il semblerais que le bot sois déjà connecté dans un autre salon")
@@ -88,7 +88,7 @@ module.exports = {
                     syntax: "music volume (volume souhaité de 1 à 100, par défaut à 20)",
                     enable: true,
                     argsRequire: true,
-                    role: "vip",
+                    role: "everyone",
                     async execute(message, args) {
                         if(!soundManager.isConnect()) return message.channel.send("Oups, il semblerais que le bot ne sois pas connecté")
                         if(!message.member.voice.channel || !soundManager.isInChannel(message.member.voice.channel)) return message.channel.send('Seul les personnes connecté en vocal dans le même salon que le bot sont autorisé à changer le volume de la musique')
@@ -113,7 +113,7 @@ module.exports = {
                     syntax: "music pause",
                     enable: true,
                     argsRequire: false,
-                    role: "vip",
+                    role: "everyone",
                     async execute(message) {
                         if(!soundManager.isConnect()) return message.channel.send("Oups, il semblerais que le bot ne sois pas connecté")
                         if(!message.member.voice.channel || !soundManager.isInChannel(message.member.voice.channel)) return message.channel.send('Seul les personnes connecté en vocal dans le même salon que le bot sont autorisé à mettre en pause la musique')
@@ -139,7 +139,7 @@ module.exports = {
                     syntax: "music resume",
                     enable: true,
                     argsRequire: false,
-                    role: "vip",
+                    role: "everyone",
                     async execute(message) {
                         if(!soundManager.isConnect()) return message.channel.send("Oups, il semblerais que le bot ne sois pas connecté")
                         if(!message.member.voice.channel || !soundManager.isInChannel(message.member.voice.channel)) return message.channel.send('Seul les personnes connecté en vocal dans le même salon que le bot sont autorisé à relancer la musique')
@@ -169,7 +169,7 @@ module.exports = {
                     syntax: "music skip",
                     enable: true,
                     argsRequire: false,
-                    role: "vip",
+                    role: "everyone",
                     async execute(message) {
                         if(!soundManager.isConnect()) return message.channel.send("Oups, il semblerais que le bot ne sois pas connecté")
                         if(!message.member.voice.channel || !soundManager.isInChannel(message.member.voice.channel)) return message.channel.send('Seul les personnes connecté en vocal dans le même salon que le bot sont autorisé à changer de musique')
@@ -189,7 +189,7 @@ module.exports = {
                     syntax: "music status",
                     enable: true,
                     argsRequire: false,
-                    role: "vip",
+                    role: "everyone",
                     async execute(message) {
                         let embed = new Discord.MessageEmbed()
                             .setTitle(`Teku - Musique`)
