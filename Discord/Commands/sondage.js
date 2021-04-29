@@ -337,7 +337,7 @@ module.exports = {
                     name: "test",
                     description: "créer un message de test",
                     syntax: "sondage test",
-                    enable: true,
+                    enable: false,
                     argsRequire: false,
                     role: "moderator",
                     async execute(message) {
