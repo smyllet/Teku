@@ -13,6 +13,7 @@ const logs = require('./Global/module/logs')
 
 // - - - Chargement de class - - - //
 const CommandManager = require('./Discord/Class/CommandManager')
+const SondageManager = require('./Discord/Class/SondageManager')
 
 // - - - Chargement Config - - - //
 const config = require('./config.json')
@@ -39,6 +40,9 @@ dBot.on('ready', () => {
     soundManager.init(dBot) // Initialisation du sound manager
     commandManager.autoAddAllCommand() // Initialisation des commandes
     transfObject.addObject("commandManager", commandManager) // Stockage du commandManager pour la commande help
+    dBot.guilds.fetch(config.bot.discord.guildId).then(guild => {
+        SondageManager.loadFromFile(guild).then(() => logs.info('Sondage(s) chargé')) // Chargement des sondages
+    })
 })
 
 // En cas d'erreur
@@ -133,4 +137,71 @@ dBot.on("guildBanAdd", (guild, user) => {
             .addField('raison', banInfo.reason)
         staffNotifManager.sendNotif({embed: embed})
     })
+})
+
+// Ajout d'une réaction à un message
+dBot.on('messageReactionAdd', async (messageReaction, user) => {
+    // Gestion réaction sondages
+    let sondage = SondageManager.getSondageByMessageId(messageReaction.message.id)
+    if(sondage && !user.bot) {
+        let userReacts = messageReaction.message.reactions.cache.filter(reaction => reaction.users.cache.has(user.id))
+
+        let option = sondage.getOptionByEmote(messageReaction.emoji.toString())
+        if(option) {
+            if(userReacts.size <= 1) option.up()
+            else await userReacts.forEach( (messageReaction, emote) => {
+                // Récupération emote custom
+                let emoji = messageReaction.message.guild.emojis.cache.find(emoji => emoji.id === emote)
+                if(emoji) emote = emoji.toString()
+
+                if(emote === option.getEmote()) option.up()
+                else messageReaction.users.remove(user.id)
+            })
+
+            sondage.update()
+        }
+        else await messageReaction.remove()
+    }
+})
+
+// Suppression d'une réaction à un message
+dBot.on('messageReactionRemove', async (messageReaction, user) => {
+    // Gestion réaction sondages
+    let sondage = SondageManager.getSondageByMessageId(messageReaction.message.id)
+    if(sondage && !user.bot) {
+        let option = sondage.getOptionByEmote(messageReaction.emoji.toString())
+        if(option) {
+            option.down()
+            sondage.update()
+        }
+    }
+})
+
+// Suppression de toute les réactions d'un message
+dBot.on('messageReactionRemoveAll', async (message) => {
+    // Gestion réaction sondages
+    let sondage = SondageManager.getSondageByMessageId(message.id)
+    if(sondage) {
+        SondageManager.removeSondage(sondage)
+    }
+})
+
+// Suppression d'un message
+dBot.on('messageDelete', (message) => {
+    // Gestion réaction sondages
+    let sondage = SondageManager.getSondageByMessageId(message.id)
+    if(sondage) {
+        logs.warn('Sondage supprimé')
+        SondageManager.removeSondage(sondage)
+    }
+})
+
+// Suppression d'un embed
+dBot.on('messageUpdate', async (oldMessage, newMessage) => {
+    // Gestion réaction sondages
+    let sondage = SondageManager.getSondageByMessageId(newMessage.id)
+    if(sondage && (newMessage.embeds.length < 1)) {
+        logs.warn('Intégration de sondage supprimé')
+        await newMessage.delete()
+    }
 })
