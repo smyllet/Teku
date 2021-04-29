@@ -4,8 +4,10 @@ const config = require('../../config.json')
 
 class CommandManager
 {
+    /** @type {Object<string, Command>} */
     commands = {}
 
+    /** @return {void} */
     // Ajouter automatiquement les commandes du dossier commands
     autoAddAllCommand()
     {
@@ -32,6 +34,7 @@ class CommandManager
                                 subCommand.argsRequire,
                                 subCommand.role,
                                 subCommand.execute,
+                                null
                             )
                         )
                     }
@@ -43,7 +46,8 @@ class CommandManager
             if(command.enable)
             {
                 this.addCommand(
-                    new Command(command.name, null,
+                    new Command(command.name,
+                        null,
                         command.description,
                         command.syntax,
                         command.enable,
@@ -57,12 +61,15 @@ class CommandManager
         })
     }
 
+    /** @param {Command} command */
     // Ajouter une commande
     addCommand(command)
     {
         this.commands[command.name] = command
     }
 
+    /** @param {String} name
+     *  @return {Command} command*/
     // Obtenir un commande par son nom
     getCommandByName(name)
     {
@@ -70,6 +77,8 @@ class CommandManager
         else return null
     }
 
+    /** @param {string} message
+     *  @return {Object<Command, array<string>>} Command and arguments */
     // Obtenir une commande et des arguments à partir d'un message Discord
     getCommandAndArgsFromMessageText(message)
     {
@@ -91,6 +100,7 @@ class CommandManager
         else return null
     }
 
+    /** @return {array<Command>} commandsList */
     getCommandsList()
     {
         let commandsList = []

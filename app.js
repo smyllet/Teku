@@ -49,7 +49,7 @@ dBot.on('ready', () => {
 dBot.on('error', err => logs.err(err.toString()))
 
 // Lors d'un nouveau message
-dBot.on('message', message =>
+dBot.on('message', async message =>
 {
     // Reset le compteur pour l'auto clear
     autoClearTextChannels.resetChannelTime(message.channel.id)
@@ -73,11 +73,11 @@ dBot.on('message', message =>
                     // Exécuté la commande si toutes les conditions précédente sont réuni
                     command.execute(message, args).then(() => logs.info(`Commande ${command.getFullName()} exécuté par ${message.member.user.tag} dans le salon ${message.channel.name}`))
                 }
-                else message.channel.send(`Syntax : ${command.getSyntax()}`)
+                else await message.channel.send(`Syntax : ${command.getSyntax()}`)
             }
-            else message.channel.send("Vous n'avez pas la permission d'exécuter cette commande")
+            else await message.channel.send("Vous n'avez pas la permission d'exécuter cette commande")
         }
-        else message.channel.send(`Commande invalide`)
+        else await message.channel.send(`Commande invalide`)
     }
 
     // Ajout création

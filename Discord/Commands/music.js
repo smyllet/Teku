@@ -38,7 +38,7 @@ module.exports = {
                         if(addResult) {
                             if(soundManager.haveMusic()) return message.channel.send(`Ajout de "${addResult.title}" à la liste de lecture`)
                         }
-                        else message.channel.send("Echec de l'ajout de la musique à la liste de lecture")
+                        else message.channel.send("Échec de l'ajout de la musique à la liste de lecture")
                         if(addResult.url !== soundManager.getFirstMusic().url) message.channel.send(`Ajout de "${addResult.title}" à la liste de lecture`)
                         soundManager.playYoutubeMusic().then(r => {
                             if(r) message.channel.send(`Lecture de la musique "${r.title}"`)

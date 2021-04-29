@@ -6,7 +6,7 @@ config = require('../../config.json')
 module.exports = {
     name: "sondage",
     description: "Gestion des sondage",
-    syntax: "creation [create|reset|post]",
+    syntax: "sondage [create|reset|post|end|...]",
     enable: true,
     argsRequire: false,
     role: "moderator",

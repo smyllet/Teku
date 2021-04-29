@@ -17,7 +17,7 @@ module.exports = {
                 enable: true,
                 argsRequire: true,
                 role: "moderator",
-                async execute(message, args) {
+                async execute(message) {
                     let member = message.mentions.members.first()
                     let role = message.guild.roles.cache.find(key => key.id === config.bot.discord.roles.mute.id)
 
@@ -27,7 +27,7 @@ module.exports = {
                     if(member.roles.cache.has(role.id)) return message.channel.send("Désolé mais ce membre a déjà été réduit au silence")
 
                     member.roles.add(role)
-                        .then(r => {
+                        .then(() => {
                             message.channel.send(`${member} a bien été réduit au silence`)
                         })
                         .catch(console.error)
@@ -41,7 +41,7 @@ module.exports = {
                 enable: true,
                 argsRequire: true,
                 role: "moderator",
-                async execute(message, args) {
+                async execute(message) {
                     let member = message.mentions.members.first()
                     let role = message.guild.roles.cache.find(key => key.id === config.bot.discord.roles.mute.id)
 
@@ -50,7 +50,7 @@ module.exports = {
                     if(member === message.member) return message.channel.send("Comment ? Pas compris désolé")
 
                     member.roles.remove(role)
-                        .then(r => {
+                        .then(() => {
                             message.channel.send(`${member} a bien retrouvé la parole`)
                         })
                         .catch(console.error)
@@ -64,7 +64,7 @@ module.exports = {
                 enable: true,
                 argsRequire: false,
                 role: "moderator",
-                async execute(message, args) {
+                async execute(message) {
                     let role = message.guild.roles.cache.find(key => key.id === config.bot.discord.roles.mute.id)
 
                     let list = []

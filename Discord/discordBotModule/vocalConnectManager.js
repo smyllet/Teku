@@ -5,7 +5,7 @@ let role = null
 exports.init = (bot) => {
     role = bot.guilds.cache.find(key => key.id === config.bot.discord.guildId).roles.cache.find(key => key.id === config.bot.discord.roles.vocalConnect.id) // Récupération du role vocal-connect
 
-    this.refreshRole() // Réactualisation des membres possèdant le role vocal-connect
+    this.refreshRole() // Réactualisation des membres possédant le role vocal-connect
 }
 
 exports.refreshRole = () => {

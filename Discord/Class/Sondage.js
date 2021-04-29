@@ -145,7 +145,7 @@ class Sondage {
     }
 
     /** @param {int} percent
-     *  @return {string} percet */
+     *  @return {string} percent */
     generatePercentBar(percent) {
         let result = ""
 
