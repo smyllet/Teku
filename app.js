@@ -9,6 +9,7 @@ const staffNotifManager = require('./Discord/discordBotModule/staffNotifManager'
 const transfObject = require('./Discord/discordBotModule/transfObject')
 const soundManager = require('./Discord/discordBotModule/soundManager')
 const creationManager = require('./Discord/discordBotModule/creationManager')
+const eventManager = require('./Discord/discordBotModule/EventManager')
 const logs = require('./Global/module/logs')
 
 // - - - Chargement de class - - - //
@@ -162,6 +163,9 @@ dBot.on('messageReactionAdd', async (messageReaction, user) => {
         }
         else await messageReaction.remove()
     }
+
+    // Gestion des validation par réaction
+    if(!user.bot) eventManager.emit(`messageReactionAdd_${messageReaction.message.id}`, messageReaction)
 })
 
 // Suppression d'une réaction à un message
