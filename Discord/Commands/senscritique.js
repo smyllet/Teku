@@ -23,7 +23,6 @@ function getResultEmbed(result, searchInput, activeChoix) {
         detail.push(`Type : ${(r.type) ? r.type : 'Inconnu'}`)
         detail.push(`Genre(s) : ${(r.genres && (r.genres.length > 0)) ? r.genres.join(', ') : 'Inconnu'}`)
         detail.push(`Créateur(s) : ${(r.creators && (r.creators.length > 0)) ? r.creators.join(', ') : 'Inconnu'}`)
-        detail.push(`Note : ${(r.rating) ? r.rating : 'Inconnu'}`)
 
         embed.addField(`${(activeChoix) ? `${choix[index]} ` : ''}${r.title}${(r.year) ? ` (${r.year})` : ""}`, detail.join('\n'))
     })
@@ -108,7 +107,6 @@ module.exports = {
                         embed.addField('Date de sortie', (data.date) ? dateToString(data.date) : "Inconnue")
                         embed.addField('Genre(s)', (data.genres && data.genres.length > 0) ? data.genres.join(', ') : "Inconnu")
                         embed.addField('Créateur(s)', (data.creators && data.creators.length > 0) ? data.creators.join(', ') : "Inconnu")
-                        if(data.rating) embed.addField('Note', `${data.rating} (${numFormatter(data.rating_details.rating)} notes)`)
                         if(data.cover) embed.setImage(data.cover)
 
                         mes.edit({embed: embed})
