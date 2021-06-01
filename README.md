@@ -6,7 +6,7 @@ Teku est le bot du serveur Discord de Dynivers.
 - [x] Ping
 - [x] Coin
 - [x] Help
-- [ ] Suggestion
+- [x] Suggestion
 - [x] SensCritique
 - [ ] Cookie
 - [x] Mute
@@ -14,7 +14,7 @@ Teku est le bot du serveur Discord de Dynivers.
 - [ ] Reload
 - [x] Déconnexion
 - [x] Sondage
-- [ ] Bug
+- [x] Bug
 - [x] AFK
 
 ### Fonction
