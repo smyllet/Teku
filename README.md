@@ -35,5 +35,5 @@ Teku est le bot du serveur Discord de Dynivers.
 - [x] File d'attente
 - [x] Passer à la musique suivante
 - [ ] Ajout de playlist YouTube
-- [ ] Ajout de musique via le nom d'une vidéo YouTube
+- [x] Ajout de musique via le nom d'une vidéo YouTube
 - [ ] Lecture de webradio

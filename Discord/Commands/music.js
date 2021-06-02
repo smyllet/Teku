@@ -3,7 +3,9 @@ config = require('../../config.json')
 
 // Import module
 const soundManager = require('../discordBotModule/soundManager')
+const logs = require('../../Global/module/logs')
 const Discord = require('discord.js')
+const youtubeSearch = require('youtube-search-api')
 
 
 module.exports = {
@@ -18,8 +20,8 @@ module.exports = {
             play:
                 {
                     name: "play",
-                    description: "Lire une musique depuis un lien youtube",
-                    syntax: "music play (lien youtube)",
+                    description: "Lire une musique depuis un lien youtube ou par son nom",
+                    syntax: "music play (lien youtube | nom d'une musique)",
                     enable: true,
                     argsRequire: true,
                     role: "everyone",
@@ -29,7 +31,22 @@ module.exports = {
 
                         let url = args[0]
 
-                        if(!soundManager.youtubeUrlIsValide(url)) return message.channel.send("Le lien que vous avez fourni est invalide")
+                        if(!soundManager.youtubeUrlIsValide(url)) {
+                            let search = args.join(' ')
+
+                            try {
+                                let result = await youtubeSearch.GetListByKeyword(search, false)
+
+                                if(result.items) {
+                                    result = result.items.filter(m => m.isLive === false)
+                                    if(result.length > 0) url = `https://www.youtube.com/watch?v=${result[0].id}`
+                                }
+                            } catch (err) {
+                                return logs.err('Recherche musique : ' + err)
+                            }
+                        }
+
+                        if(!soundManager.youtubeUrlIsValide(url)) return message.channel.send("Aucune musique correspondante")
 
                         if(!soundManager.isConnect()) await soundManager.connectToVocalChannel(message.member.voice.channel)
 
@@ -58,7 +75,7 @@ module.exports = {
                         if(!message.member.voice.channel || !soundManager.isInChannel(message.member.voice.channel)) return message.channel.send('Seul les personnes connecté en vocal dans le même salon que le bot sont autorisé à arrêter la musique')
                         if(soundManager.haveMusic()) {
                             soundManager.stopMusic()
-                            message.channel.send("Musique arrêté")
+                            message.channel.send("Musique arrêtée")
                         }
                         else
                         {
