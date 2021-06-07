@@ -6,7 +6,28 @@ const soundManager = require('../discordBotModule/soundManager')
 const logs = require('../../Global/module/logs')
 const Discord = require('discord.js')
 const youtubeSearch = require('youtube-search-api')
+const urlParser = require('url-parse');
 
+/** @param {string} url */
+function getListIdFromYoutubeUrl(url) {
+    let up = urlParser(url)
+
+    if(((up.hostname === "youtube.com") || (up.hostname === "www.youtube.com")) && up.query && (up.query.length > 0)) {
+
+        let query = up.query.substr(1)
+
+        let queryList = query.split('&')
+
+        let queryValue = {}
+
+        queryList.forEach(q => {
+            let qs = q.split('=')
+            if(qs.length === 2) queryValue[qs[0]] = qs[1]
+        })
+
+        return queryValue.list
+    } return null
+}
 
 module.exports = {
     name: "music",
@@ -20,7 +41,7 @@ module.exports = {
             play:
                 {
                     name: "play",
-                    description: "Lire une musique depuis un lien youtube ou par son nom",
+                    description: "Lire une musique ou une playlist depuis un lien youtube ou par son nom",
                     syntax: "music play (lien youtube | nom d'une musique)",
                     enable: true,
                     argsRequire: true,
@@ -30,33 +51,62 @@ module.exports = {
                         if(soundManager.isConnect() && !soundManager.isInChannel(message.member.voice.channel)) return message.channel.send("Désolé, mais il semblerais que le bot sois déjà connecté dans un autre salon")
 
                         let url = args[0]
+                        let playlist = getListIdFromYoutubeUrl(url)
 
-                        if(!soundManager.youtubeUrlIsValide(url)) {
+                        if(!soundManager.youtubeUrlIsValide(url) || playlist) {
                             let search = args.join(' ')
 
-                            try {
-                                let result = await youtubeSearch.GetListByKeyword(search, false)
+                            if(playlist) {
+                                let result = await youtubeSearch.GetPlaylistData(playlist)
+                                let musics = result.items.filter(m => m.isLive === false).map((mf) => `https://www.youtube.com/watch?v=${mf.id}`)
 
-                                if(result.items) {
-                                    result = result.items.filter(m => m.isLive === false)
-                                    if(result.length > 0) url = `https://www.youtube.com/watch?v=${result[0].id}`
+                                if(musics.length > 0) {
+                                    if(!soundManager.isConnect()) await soundManager.connectToVocalChannel(message.member.voice.channel)
+
+                                    let first = musics.shift()
+
+                                    /** @type Message */
+                                    let loadMessage = await message.channel.send(`Ajout en cours de la playlist : ${result.metadata.playlistMetadataRenderer.title}`)
+
+                                    await soundManager.addToPlaylist(first).then(() => {
+                                        setTimeout(async () => {
+                                            for(let link of musics) {
+                                                await soundManager.addToPlaylist(link)
+                                            }
+
+                                            await loadMessage.edit(`Ajout de "${musics.length+1}" musiques à la liste de lecture`)
+                                        })
+                                    }).catch(console.error)
+                                } else message.channel.send("Aucune musique correspondante")
+
+                            } else {
+                                try {
+                                    let result = await youtubeSearch.GetListByKeyword(search, false)
+
+                                    if(result.items) {
+                                        result = result.items.filter(m => m.isLive === false)
+                                        if(result.length > 0) url = `https://www.youtube.com/watch?v=${result[0].id}`
+                                    }
+                                } catch (err) {
+                                    return logs.err('Recherche musique : ' + err)
                                 }
-                            } catch (err) {
-                                return logs.err('Recherche musique : ' + err)
                             }
                         }
 
-                        if(!soundManager.youtubeUrlIsValide(url)) return message.channel.send("Aucune musique correspondante")
+                        if(!soundManager.youtubeUrlIsValide(url) && !playlist) return message.channel.send("Aucune musique correspondante")
 
                         if(!soundManager.isConnect()) await soundManager.connectToVocalChannel(message.member.voice.channel)
 
-                        let addResult = await soundManager.addToPlaylist(url)
+                        if(!playlist) {
+                            let addResult = await soundManager.addToPlaylist(url)
 
-                        if(addResult) {
-                            if(soundManager.haveMusic()) return message.channel.send(`Ajout de "${addResult.title}" à la liste de lecture`)
+                            if(addResult) {
+                                if(soundManager.haveMusic()) return message.channel.send(`Ajout de "${addResult.title}" à la liste de lecture`)
+                            }
+                            else message.channel.send("Échec de l'ajout de la musique à la liste de lecture")
+                            if(addResult.url !== soundManager.getFirstMusic().url) message.channel.send(`Ajout de "${addResult.title}" à la liste de lecture`)
                         }
-                        else message.channel.send("Échec de l'ajout de la musique à la liste de lecture")
-                        if(addResult.url !== soundManager.getFirstMusic().url) message.channel.send(`Ajout de "${addResult.title}" à la liste de lecture`)
+
                         soundManager.playYoutubeMusic().then(r => {
                             if(r) message.channel.send(`Lecture de la musique "${r.title}"`)
                         })
