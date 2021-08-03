@@ -65,14 +65,14 @@ module.exports = {
             .setThumbnail(scLogo)
 
         /** @type Message */
-        let mes = await message.channel.send({embed: embed})
+        let mes = await message.channel.send({embeds: [embed]})
 
         sc.search(searchInput).then(async res => {
             let result = res.items.slice(0, 5)
 
             let embed = getResultEmbed(result, searchInput, true)
 
-            await mes.edit({embed: embed})
+            await mes.edit({embeds: [embed]})
 
             for(let i = 0; i < result.length; i++) {
                 mes.react(choix[i]).then()
@@ -84,7 +84,7 @@ module.exports = {
                 eventManager.removeAllListeners(`messageReactionAdd_${mes.id}`)
                 mes.reactions.removeAll()
                 let embed = getResultEmbed(result, searchInput)
-                mes.edit({embed:embed})
+                mes.edit({embeds: [embed]})
             }, 30000)
 
             eventManager.once(`messageReactionAdd_${mes.id}`, messageReaction => {
@@ -109,7 +109,7 @@ module.exports = {
                         embed.addField('Créateur(s)', (data.creators && data.creators.length > 0) ? data.creators.join(', ') : "Inconnu")
                         if(data.cover) embed.setImage(data.cover)
 
-                        mes.edit({embed: embed})
+                        mes.edit({embeds: [embed]})
                     }).catch(e => {
                         let embed = new Discord.MessageEmbed()
                             .setTitle(`SensCritique - Une erreur est survenue`)
@@ -117,7 +117,7 @@ module.exports = {
                             .setColor('#D33D33')
                             .setThumbnail(scLogo)
 
-                        mes.edit({embed: embed})
+                        mes.edit({embeds: [embed]})
 
                         console.error(e)
                     })
@@ -128,7 +128,7 @@ module.exports = {
                         .setColor('#D33D33')
                         .setThumbnail(scLogo)
 
-                    mes.edit({embed: embed})
+                    mes.edit({embeds: [embed]})
                 }
             })
         }).catch(e => {
@@ -138,7 +138,7 @@ module.exports = {
                 .setColor('#D33D33')
                 .setThumbnail(scLogo)
 
-            mes.edit({embed: embed})
+            mes.edit({embeds: [embed]})
             mes.reactions.removeAll()
 
             console.error(e)

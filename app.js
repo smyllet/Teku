@@ -20,7 +20,16 @@ const SondageManager = require('./Discord/Class/SondageManager')
 const config = require('./config.json')
 
 // - - - Instantiation du bot - - - //
-const dBot = new Discord.Client()
+const dBot = new Discord.Client({
+    intents: [
+        Discord.Intents.FLAGS.GUILDS,
+        Discord.Intents.FLAGS.GUILD_MESSAGES,
+        Discord.Intents.FLAGS.GUILD_VOICE_STATES,
+        Discord.Intents.FLAGS.GUILD_MEMBERS,
+        Discord.Intents.FLAGS.GUILD_BANS,
+        Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS
+    ]
+})
 
 // - - - Instantiation des commandes - - - //
 const commandManager = new CommandManager()
@@ -31,7 +40,14 @@ dBot.login(config.bot.discord.token).catch(err => logs.err(err.toString()))
 // - - - Discord Bot Event - - - //
 // Au démarrage du bot
 dBot.on('ready', () => {
-    dBot.user.setPresence({activity: {name: config.bot.discord.activity}, status: "online"}).then()
+    dBot.user.setPresence({
+            activities: [
+                {
+                    name: config.bot.discord.activity
+                }
+            ],
+            status: "online"
+        })
     logs.info('Bot discord en ligne')
 
     autoClearTextChannels.init(dBot) // Initialisation de l'auto clear
@@ -50,7 +66,7 @@ dBot.on('ready', () => {
 dBot.on('error', err => logs.err(err.toString()))
 
 // Lors d'un nouveau message
-dBot.on('message', async message =>
+dBot.on('messageCreate', async message =>
 {
     // Reset le compteur pour l'auto clear
     autoClearTextChannels.resetChannelTime(message.channel.id)
@@ -92,7 +108,7 @@ dBot.on('message', async message =>
 // Changement dans l'un des salons vocaux
 dBot.on('voiceStateUpdate', (oldState, newState) => {
     // Connexion à un salon vocal
-    if(!oldState.channelID && newState.channelID)
+    if(!oldState.channelId && newState.channelId)
     {
         logs.info(`${newState.member.user.tag} c'est connecté au salon ${newState.channel.name}`)
         vocalConnectManager.addRoleToMember(newState.member)
@@ -101,7 +117,7 @@ dBot.on('voiceStateUpdate', (oldState, newState) => {
     }
 
     // Déconnexion d'un salon vocal
-    if(oldState.channelID && !newState.channelID)
+    if(oldState.channelId && !newState.channelId)
     {
         logs.info(`${oldState.member.user.tag} c'est déconnecté du salon ${oldState.channel.name}`)
         vocalConnectManager.removeRoleToMember(oldState.member)
@@ -110,7 +126,7 @@ dBot.on('voiceStateUpdate', (oldState, newState) => {
     }
 
     // Déplacement d'un salon vocal à un autre
-    if(oldState.channelID && newState.channelID && (oldState.channelID !== newState.channelID))
+    if(oldState.channelId && newState.channelId && (oldState.channelId !== newState.channelId))
     {
         logs.info(`${oldState.member.user.tag} c'est déplacé du salon ${oldState.channel.name} au salon ${newState.channel.name}`)
 
@@ -129,8 +145,8 @@ dBot.on('guildMemberRemove', member => {
     staffNotifManager.sendNotif(`${member.user.tag} a quitté le serveur`)
 })
 
-dBot.on("guildBanAdd", (guild, user) => {
-    guild.fetchBan(user).then(banInfo => {
+dBot.on("guildBanAdd", (guildBan, user) => {
+    guildBan.guild.bans.fetch(user).then(banInfo => {
         let embed = new Discord.MessageEmbed()
             .setColor('#d00a27')
             .setTitle(`   Membre Banni   `)

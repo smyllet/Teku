@@ -7,7 +7,7 @@ exports.initCreationMessage = async (message) => {
     // Supprimer le message de pin
     message.channel.messages.fetch({limit: 1}).then((messages) => {
         let pinMessage = messages.last()
-        if(pinMessage.type === "PINS_ADD") pinMessage.delete({timeout: 2000})
+        if(pinMessage.type === "PINS_ADD") setTimeout(() => pinMessage.delete(), 2000)
     })
 
     // retiré toute les réaction potentiellement existante (normalement ne sert à rien mais on sais jamais)

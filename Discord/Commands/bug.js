@@ -20,7 +20,7 @@ module.exports = {
 
         logs.warn(`Bug signalé par ${message.author.tag} : ${args.join(' ')}`)
 
-        staffNotifManager.sendNotif(embed).then(m => {
+        staffNotifManager.sendNotif({embeds: [embed]}).then(() => {
             message.channel.send('Votre bug a bien été signalé')
         })
     }

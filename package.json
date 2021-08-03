@@ -1,6 +1,6 @@
 {
   "name": "teku",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "description": "Teku",
   "main": "app.js",
   "private": true,
@@ -11,8 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "@discordjs/opus": "^0.3.3",
+    "@discordjs/voice": "^0.5.5",
     "@nyakimov/senscritique-api": "^1.1.5",
-    "discord.js": "^12.5.3",
+    "discord.js": "^13.0.0-dev.t1627906063.6e0ea02",
     "mocha": "^8.3.2",
     "url-parse": "^1.5.1",
     "youtube-search-api": "^1.0.10",

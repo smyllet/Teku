@@ -33,7 +33,7 @@ module.exports = {
     name: "music",
     description: "Commande de gestion de la musique",
     syntax: "music [play|stop|off|volume|pause|resume|skip]",
-    enable: true,
+    enable: false,
     argsRequire: false,
     role: "everyone",
     subCommands:

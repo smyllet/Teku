@@ -1,4 +1,5 @@
 const fs = require('fs')
+const Discord = require('discord.js')
 
 const Sondage = require('./Sondage')
 const SondageOption = require('./SondageOption')
@@ -29,7 +30,7 @@ class SondageManager {
         return this.creationSondage
     }
 
-    /** @param {TextChannel} messageChannel
+    /** @param {Discord.TextChannel} messageChannel
      *  @return {boolean} postStatus */
     static async postSondage(messageChannel) {
         if(this.creationSondage && (this.creationSondage.getOptions().length >= 2)) {
@@ -80,7 +81,7 @@ class SondageManager {
         sondageFile.write(JSON.stringify(this.toJson()))
     }
 
-    /** @param {Guild} guild */
+    /** @param {Discord.Guild} guild */
     static async loadFromFile(guild) {
         let sondageFile
 
