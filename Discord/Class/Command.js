@@ -7,13 +7,14 @@ class Command
      *  @param {null} parent
      *  @param {string} description
      *  @param {string} syntax
+     *  @param {array<Object>} options
      *  @param {boolean} enable
      *  @param {boolean} argsRequire
      *  @param {string} role
      *  @param {function} execute
      *  @param {CommandManager} subCommands
      *  @return {void} */
-    constructor(name, parent, description, syntax, enable, argsRequire, role, execute, subCommands)
+    constructor(name, parent, description, syntax, options, enable, argsRequire, role, execute, subCommands)
     {
         let roleId
         if(config.bot.discord.roles[role]) roleId = config.bot.discord.roles[role].id
@@ -24,6 +25,7 @@ class Command
         this.parent = parent
         this.description = description
         this.syntax = syntax
+        this.options = options
         this.enable = enable
         this.argsRequire = argsRequire
         this.role = roleId
@@ -31,11 +33,10 @@ class Command
         this.subCommands = subCommands
     }
 
-    /** @param {array<string>} args
-     *  @return {boolean} */
-    isExecutable(args)
+    /** @return {boolean} */
+    isExecutable()
     {
-        return !((this.argsRequire && (args.length < 1)) || !this.execute);
+        return !(!this.execute);
     }
 
     /** @param {GuildMember} member
@@ -57,6 +58,41 @@ class Command
     getSyntax()
     {
         return config.bot.discord.commandPrefix + this.syntax
+    }
+
+    /** @return {any} slashData */
+    getSlashData()
+    {
+        let data = {}
+        data.name = this.name
+        data.description = this.description
+
+        if(this.subCommands) {
+            data.options = this.subCommands.getSubSlashData()
+        }
+
+        if(this.options) {
+            if(!data.options) data.options = []
+            this.options.forEach(op => data.options.push(op))
+        }
+
+        return data
+    }
+
+    /** @return {any} slashData */
+    getSubSlashData()
+    {
+        let data = {}
+        data.name = this.name
+        data.description = this.description
+        data.type = 'SUB_COMMAND'
+
+        if(this.options) {
+            data.options = []
+            this.options.forEach(op => data.options.push(op))
+        }
+
+        return data
     }
 }
 

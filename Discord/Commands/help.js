@@ -6,7 +6,14 @@ module.exports = {
     name: "help",
     description: "Liste des commandes",
     syntax: "help (commande)",
-    enable: true,
+    options: [
+        {
+            name: "commande",
+            type: "STRING",
+            description: "Nom de la commande pour la quelle vous souhaitez optenir de l'aide"
+        }
+    ],
+    enable: false,
     argsRequire: false,
     role: "everyone",
     async execute(message, args) {

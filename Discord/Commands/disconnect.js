@@ -5,14 +5,14 @@ module.exports = {
     enable: true,
     argsRequire: false,
     role: "everyone",
-    async execute(message) {
-        if(message.member.voice.channel) {
-            let voiceName = message.member.voice.channel.name
-            message.member.voice.disconnect().then(() => {
-                message.channel.send(`Vous avez bien été déconnecté du salon ${voiceName}`)
+    async execute(interaction) {
+        if(interaction.member.voice.channel) {
+            let voiceName = interaction.member.voice.channel.name
+            interaction.member.voice.disconnect().then(() => {
+                interaction.reply({content: `Vous avez bien été déconnecté du salon ${voiceName}`, ephemeral: true})
             }).catch(() => {
-                message.channel.send(`Une erreur est survenue lors de votre déconnexion`)
+                interaction.reply({content: `Une erreur est survenue lors de votre déconnexion`, ephemeral: true})
             })
-        } else message.channel.send("Vous n'êtes pas connecté dans un salon vocal")
+        } else interaction.reply({content: "Vous n'êtes pas connecté dans un salon vocal", ephemeral: true})
     }
 }

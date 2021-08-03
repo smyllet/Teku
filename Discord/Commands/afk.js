@@ -5,15 +5,15 @@ module.exports = {
     enable: true,
     argsRequire: false,
     role: "everyone",
-    async execute(message) {
-        if(!message.member.voice.channel) return message.channel.send("Vous n'êtes pas connecté dans un salon vocal")
+    async execute(interaction) {
+        if(!interaction.member.voice.channel) return interaction.reply({content: "Vous n'êtes pas connecté dans un salon vocal", ephemeral: true})
 
-        if(message.member.voice.channel === message.guild.afkChannel) return message.channel.send("Vous êtes déjà connecté dans le salon AFK")
+        if(interaction.member.voice.channel === interaction.guild.afkChannel) return interaction.reply({content: "Vous êtes déjà connecté dans le salon AFK", ephemeral: true})
 
-        message.member.voice.setChannel(message.guild.afkChannel).then(() => {
-            message.channel.send(`Vous avez bien été déplacé dans le salon AFK`)
+        interaction.member.voice.setChannel(interaction.guild.afkChannel).then(() => {
+            interaction.reply({content: `Vous avez bien été déplacé dans le salon AFK`, ephemeral: true})
         }).catch(() => {
-            message.channel.send(`Une erreur est survenue lors de votre déplacement`)
+            interaction.reply({content: `Une erreur est survenue lors de votre déplacement`, ephemeral: true})
         })
     }
 }

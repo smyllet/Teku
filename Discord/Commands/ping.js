@@ -5,10 +5,12 @@ module.exports = {
     enable: true,
     argsRequire: false,
     role: "everyone",
-    async execute(message) {
-        /** @type {Message} */
-        let msg = await message.channel.send(`🏓 Ping . . .`)
+    async execute(interaction) {
+        await interaction.reply({content: `🏓 Ping . . .`})
+
+        /** @type {any} */
+        let msg = await interaction.fetchReply()
         
-        await msg.edit(`Pong! 🏓\nLatence : ${Math.floor(msg.createdAt - message.createdAt)}ms\nLatence API : ${Math.round(message.client.ws.ping)}ms`)
+        await interaction.editReply(`Pong! 🏓\nLatence : ${Math.floor(msg.createdAt - interaction.createdAt)}ms\nLatence API : ${Math.round(interaction.client.ws.ping)}ms`)
     }
 }

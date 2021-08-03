@@ -16,34 +16,36 @@ module.exports = {
                     name: "init",
                     description: "Définir un message comme création",
                     syntax: "creation init <id_message>",
+                    options: [
+                        {
+                            name: "id",
+                            type: "STRING",
+                            description: "Id du message à définir comme création",
+                            required: true
+                        }
+                    ],
                     enable: true,
                     argsRequire: true,
                     role: "moderator",
-                    async execute(message, args) {
-                        let messageBot = null
+                    async execute(interaction) {
+                        let id = interaction.options.getString("id")
 
                         // Récupérer le message demandé en arguments
-                        let creation = message.guild.channels.cache.get(config.bot.discord.creation.channel).messages.cache.get(args[0])
+                        let creation = interaction.guild.channels.cache.get(config.bot.discord.creation.channel).messages.cache.get(id)
 
                         // Si aucune création n'a été récupéré, avertir l'utilisateur
-                        if(!creation) messageBot = await message.channel.send(`Aucun message portant cet id n'a été trouvé dans le salon ${message.guild.channels.cache.get(config.bot.discord.creation.channel).toString()}`)
+                        if(!creation) await interaction.reply({content: `Aucun message portant cet id n'a été trouvé dans le salon ${interaction.guild.channels.cache.get(config.bot.discord.creation.channel).toString()}`, ephemeral: true})
                         // Sinon si le message est épinglé
                         else if(creation.pinned) {
                             // Avertir l'utilisateur que le message est déjà une création
-                            messageBot = await message.channel.send('Ce message est déjà défini comme création, il peux être réinitialisé avec la commande `creation reset <id_message>`')
+                            await interaction.reply({content: 'Ce message est déjà défini comme création, il peux être réinitialisé avec la commande `creation reset <id_message>`', ephemeral: true})
                         }
                         // Sinon
                         else {
                             // Initialisé le message comme une création
                             await creationManager.initCreationMessage(creation).then(async () => {
-                                messageBot = await message.channel.send(`Le message de ${message.member.user.tag} à bien été défini comme création`)
+                                await interaction.reply({content: `Le message de ${creation.member.user.tag} à bien été défini comme création`, ephemeral: true})
                             })
-                        }
-
-                        // Supprimer les messages du bot au bout de 5 seconde si ils sont dans le salon création
-                        if(message.channel.id === config.bot.discord.creation.channel) {
-                                message.delete({timeout: 2000})
-                                if(messageBot) messageBot.delete({timeout: 2000})
                         }
                     }
                 },
@@ -52,34 +54,36 @@ module.exports = {
                     name: "cancel",
                     description: "Retiré un message comme création",
                     syntax: "creation cancel <id_message>",
+                    options: [
+                        {
+                            name: "id",
+                            type: "STRING",
+                            description: "Id du message de la création à retirer",
+                            required: true
+                        }
+                    ],
                     enable: true,
                     argsRequire: true,
                     role: "moderator",
-                    async execute(message, args) {
-                        let messageBot = null
+                    async execute(interaction) {
+                        let id = interaction.options.getString("id")
 
                         // Récupérer le message demandé en arguments
-                        let creation = message.guild.channels.cache.get(config.bot.discord.creation.channel).messages.cache.get(args[0])
+                        let creation = interaction.guild.channels.cache.get(config.bot.discord.creation.channel).messages.cache.get(id)
 
                         // Si aucune création n'a été récupéré, avertir l'utilisateur
-                        if(!creation) messageBot = await message.channel.send(`Aucun message portant cet id n'a été trouvé dans le salon ${message.guild.channels.cache.get(config.bot.discord.creation.channel).toString()}`)
+                        if(!creation) await interaction.reply({content: `Aucun message portant cet id n'a été trouvé dans le salon ${interaction.guild.channels.cache.get(config.bot.discord.creation.channel).toString()}`, ephemeral: true})
                         // Sinon si le message n'est pas épinglé
                         else if(!creation.pinned) {
                             // Avertir l'utilisateur que le message n'est pas une création
-                            messageBot = await message.channel.send(`Ce message n'est pas une création`)
+                            await interaction.reply({content: `Ce message n'est pas une création`, ephemeral: true})
                         }
                         // Sinon
                         else {
                             // Annulé le message comme création
                             await creationManager.cancelCreationMessage(creation).then(async () => {
-                                messageBot = await message.channel.send(`Le message de ${message.member.user.tag} n'est plus une création`)
+                                await interaction.reply({content: `Le message de ${interaction.member.user.tag} n'est plus une création`, ephemeral: true})
                             })
-                        }
-
-                        // Supprimer les messages du bot au bout de 5 seconde si ils sont dans le salon création
-                        if(message.channel.id === config.bot.discord.creation.channel) {
-                            message.delete({timeout: 2000})
-                            if(messageBot) messageBot.delete({timeout: 2000})
                         }
                     }
                 },
@@ -88,34 +92,36 @@ module.exports = {
                     name: "reset",
                     description: "Réinitialisé un message comme création",
                     syntax: "creation reset <id_message>",
+                    options: [
+                        {
+                            name: "id",
+                            type: "STRING",
+                            description: "Id du message de la création à réinitialiser",
+                            required: true
+                        }
+                    ],
                     enable: true,
                     argsRequire: true,
                     role: "moderator",
-                    async execute(message, args) {
-                        let messageBot = null
+                    async execute(interaction) {
+                        let id = interaction.options.getString("id")
 
                         // Récupérer le message demandé en arguments
-                        let creation = message.guild.channels.cache.get(config.bot.discord.creation.channel).messages.cache.get(args[0])
+                        let creation = interaction.guild.channels.cache.get(config.bot.discord.creation.channel).messages.cache.get(id)
 
                         // Si aucune création n'a été récupéré, avertir l'utilisateur
-                        if(!creation) messageBot = await message.channel.send(`Aucun message portant cet id n'a été trouvé dans le salon ${message.guild.channels.cache.get(config.bot.discord.creation.channel).toString()}`)
+                        if(!creation) await interaction.reply({content: `Aucun message portant cet id n'a été trouvé dans le salon ${interaction.guild.channels.cache.get(config.bot.discord.creation.channel).toString()}`, ephemeral: true})
                         // Sinon si le message n'est pas épinglé
                         else if(!creation.pinned) {
                             // Avertir l'utilisateur que le message n'est pas une création
-                            messageBot = await message.channel.send(`Ce message n'est pas une création`)
+                            await interaction.reply({content: `Ce message n'est pas une création`, ephemeral: true})
                         }
                         // Sinon
                         else {
                             // Réinitialisé le message comme création
                             await creationManager.resetCreationMessage(creation).then(async () => {
-                                messageBot = await message.channel.send(`Le message de ${message.member.user.tag} a été réinitialisé comme une création`)
+                                await interaction.reply({content: `Le message de ${interaction.member.user.tag} a été réinitialisé comme une création`, ephemeral: true})
                             })
-                        }
-
-                        // Supprimer les messages du bot au bout de 5 seconde si ils sont dans le salon création
-                        if(message.channel.id === config.bot.discord.creation.channel) {
-                            message.delete({timeout: 2000})
-                            if(messageBot) messageBot.delete({timeout: 2000})
                         }
                     }
                 }

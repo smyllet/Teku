@@ -5,7 +5,7 @@ module.exports = {
     enable: true,
     argsRequire: false,
     role: "everyone",
-    async execute(message) {
-        message.channel.send(`La pièce est lancée !\nElle retombe . . .\nEt c'est : ${(Math.floor(Math.random() * Math.floor(2)) ===1) ? 'Pile !' : 'Face !'}`)
+    async execute(interaction) {
+        interaction.reply(`La pièce est lancée !\nElle retombe . . .\nEt c'est : ${(Math.floor(Math.random() * Math.floor(2)) ===1) ? 'Pile !' : 'Face !'}`)
     }
 }

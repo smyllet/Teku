@@ -103,6 +103,15 @@ dBot.on('messageCreate', async message =>
             logs.info(`Détection d'une création de ${message.member.user.tag}`)
         })
     }
+
+    // Deploy slash commands
+    if((message.content === `<@!${dBot.user.id}> deploy slash commands`)) {
+        if(!dBot.application?.owner) await dBot.application.fetch()
+        if(dBot.application.owner.members.find(m => m.user.id === message.author.id)) {
+            await message.guild.commands.set(commandManager.getSlashData())
+            await message.reply('déploiement')
+        } else await message.delete()
+    }
 })
 
 // Changement dans l'un des salons vocaux
@@ -223,5 +232,33 @@ dBot.on('messageUpdate', async (oldMessage, newMessage) => {
     if(sondage && (newMessage.embeds.length < 1)) {
         logs.warn('Intégration de sondage supprimé')
         await newMessage.delete()
+    }
+})
+
+// Gestion des Interaction
+dBot.on('interactionCreate', /** @param {Discord.Interaction||Discord.CommandInteraction} interaction */ async (interaction) => {
+    try {
+        // Command Slash
+        if(interaction.isCommand()) {
+            // Reset le compteur pour l'auto clear
+            autoClearTextChannels.resetChannelTime(interaction.channelId)
+
+            // si une command est retourné
+            let command = commandManager.getCommandFromInteraction(interaction)
+            if(command) {
+                // si le membre à la permission d'utiliser la commande
+                if(command.hasPermission(interaction.member)) {
+                    // Si la commande est executable
+                    if(command.isExecutable())
+                    {
+                        // Exécuté la commande si toutes les conditions précédente sont réuni
+                        command.execute(interaction).then(() => logs.info(`Commande ${command.getFullName()} exécuté par ${interaction.member.user.tag} dans le salon ${interaction.channel.name}`))
+                    }
+                    else await interaction.reply({content: `Une erreur est survenue lors de l'exécution`, ephemeral: true})
+                } else await interaction.reply({content: "'Vous n'avez pas la permission d'exécuter cette commande'", ephemeral: true})
+            } else await interaction.reply({content: 'Commande invalide', ephemeral: true})
+        }
+    } catch (e) {
+        logs.err(e.toString())
     }
 })

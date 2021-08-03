@@ -6,22 +6,32 @@ module.exports = {
     name: "bug",
     description: "Permet de signalé un bug",
     syntax: "bug (le bug que vous avez rencontré)",
+    options: [
+        {
+            name: "message",
+            type: "STRING",
+            description: "Descriptif du bug que vous avez rencontré",
+            required: true
+        }
+    ],
     enable: true,
     argsRequire: true,
     role: "everyone",
-    async execute(message, args) {
+    async execute(interaction) {
+        let message = interaction.options.getString('message')
+
         let embed = new Discord.MessageEmbed()
 
-        embed.setTitle(`Bug signalé par ${message.member.displayName}`)
+        embed.setTitle(`Bug signalé par ${interaction.member.displayName}`)
         embed.setColor('#AC3227')
-        embed.setFooter(message.author.tag, message.author.displayAvatarURL())
+        embed.setFooter(interaction.user.tag, interaction.user.displayAvatarURL())
         embed.setTimestamp()
-        embed.setDescription(args.join(' '))
+        embed.setDescription(message)
 
-        logs.warn(`Bug signalé par ${message.author.tag} : ${args.join(' ')}`)
+        logs.warn(`Bug signalé par ${interaction.user.tag} : ${message}`)
 
         staffNotifManager.sendNotif({embeds: [embed]}).then(() => {
-            message.channel.send('Votre bug a bien été signalé')
+            interaction.reply({content: 'Votre bug a bien été signalé', ephemeral: true})
         })
     }
 }

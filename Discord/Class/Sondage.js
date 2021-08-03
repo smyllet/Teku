@@ -160,7 +160,7 @@ class Sondage {
     /** @return {void} */
     async update() {
         if(this.message) {
-            await this.message.edit(this.generateEmbed())
+            await this.message.edit({embeds: [this.generateEmbed()]})
         }
     }
 
@@ -247,7 +247,7 @@ class Sondage {
     async expire() {
         if(this.message) {
             await this.message.reactions.removeAll()
-            await this.message.edit(this.generateEmbed(true))
+            await this.message.edit({embeds: [this.generateEmbed(true)]})
         }
     }
 }
