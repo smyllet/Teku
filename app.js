@@ -71,32 +71,6 @@ dBot.on('messageCreate', async message =>
     // Reset le compteur pour l'auto clear
     autoClearTextChannels.resetChannelTime(message.channel.id)
 
-    // Commande tchat
-    if(message.content.startsWith(config.bot.discord.commandPrefix) && !message.author.bot) // Si les message commence par le prefix de commande et que ce n'est pas un bot
-    {
-        // si une command est retourné
-        let structure = commandManager.getCommandAndArgsFromMessageText(message.content)
-        if(structure)
-        {
-            let command = structure.command
-            let args = structure.args
-
-            // si le membre à la permission d'utiliser la commande
-            if(command.hasPermission(message.member))
-            {
-                // Si la commande est executable
-                if(command.isExecutable(args))
-                {
-                    // Exécuté la commande si toutes les conditions précédente sont réuni
-                    command.execute(message, args).then(() => logs.info(`Commande ${command.getFullName()} exécuté par ${message.member.user.tag} dans le salon ${message.channel.name}`))
-                }
-                else await message.channel.send(`Syntax : ${command.getSyntax()}`)
-            }
-            else await message.channel.send("Vous n'avez pas la permission d'exécuter cette commande")
-        }
-        else await message.channel.send(`Commande invalide`)
-    }
-
     // Ajout création
     if((message.channel.id === config.bot.discord.creation.channel) && message.content.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(config.bot.discord.creation.keyword)) {
         creationManager.initCreationMessage(message).then(() => {
@@ -154,15 +128,13 @@ dBot.on('guildMemberRemove', member => {
     staffNotifManager.sendNotif(`${member.user.tag} a quitté le serveur`)
 })
 
-dBot.on("guildBanAdd", (guildBan, user) => {
-    guildBan.guild.bans.fetch(user).then(banInfo => {
-        let embed = new Discord.MessageEmbed()
-            .setColor('#d00a27')
-            .setTitle(`   Membre Banni   `)
-            .addField('Membre', user.tag)
-            .addField('raison', banInfo.reason)
-        staffNotifManager.sendNotif({embed: embed})
-    })
+dBot.on("guildBanAdd", (guildBan) => {
+    let embed = new Discord.MessageEmbed()
+        .setColor('#d00a27')
+        .setTitle(`   Membre Banni   `)
+        .addField('Membre', guildBan.user.tag)
+        .addField('raison', guildBan.reason)
+    staffNotifManager.sendNotif({embed: embed})
 })
 
 // Ajout d'une réaction à un message
@@ -240,9 +212,6 @@ dBot.on('interactionCreate', /** @param {Discord.Interaction||Discord.CommandInt
     try {
         // Command Slash
         if(interaction.isCommand()) {
-            // Reset le compteur pour l'auto clear
-            autoClearTextChannels.resetChannelTime(interaction.channelId)
-
             // si une command est retourné
             let command = commandManager.getCommandFromInteraction(interaction)
             if(command) {
