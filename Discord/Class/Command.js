@@ -66,6 +66,7 @@ class Command
         let data = {}
         data.name = this.name
         data.description = this.description
+        data.defaultPermission = (this.role === 0)
 
         if(this.subCommands) {
             data.options = this.subCommands.getSubSlashData()

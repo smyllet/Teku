@@ -82,8 +82,22 @@ dBot.on('messageCreate', async message =>
     if((message.content === `<@!${dBot.user.id}> deploy slash commands`)) {
         if(!dBot.application?.owner) await dBot.application.fetch()
         if(dBot.application.owner.members.find(m => m.user.id === message.author.id)) {
-            await message.guild.commands.set(commandManager.getSlashData())
-            await message.reply('déploiement')
+            await message.guild.commands.set(commandManager.getSlashData()).then(commands => {
+                commands.forEach(cmd => {
+                    let role = commandManager.getCommandByName(cmd.name).role
+                    if(role !== 0) {
+                        let permissions = [
+                            {
+                                id: role,
+                                type: 'ROLE',
+                                permission: true
+                            }
+                        ]
+                        cmd.permissions.add({permissions})
+                    }
+                })
+            })
+            await message.reply('Déploiement des slash commands')
         } else await message.delete()
     }
 })
