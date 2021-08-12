@@ -14,7 +14,7 @@ async function clearTchat(idChannel)
             if(channels[idChannel].notRemoveFirstMessage) nb = messages.size - 1 // Suppression du premiers message des messages à supprimer si cela est défini dans les params
             if(nb > 0)
             {
-                channel.bulkDelete(nb)
+                channel.bulkDelete(nb, true)
                     .then(m => {
                         logs.info(`Le salon ${channel.name} à été nettoyé, ${m.size} message(s) supprimé`)
                         if(m.size === ((channels[idChannel].notRemoveFirstMessage) ? 99 : 100)) clearTchat(idChannel)
