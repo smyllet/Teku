@@ -20,7 +20,16 @@ const SondageManager = require('./Discord/Class/SondageManager')
 const config = require('./config.json')
 
 // - - - Instantiation du bot - - - //
-const dBot = new Discord.Client()
+const dBot = new Discord.Client({
+    intents: [
+        Discord.Intents.FLAGS.GUILDS,
+        Discord.Intents.FLAGS.GUILD_MESSAGES,
+        Discord.Intents.FLAGS.GUILD_VOICE_STATES,
+        Discord.Intents.FLAGS.GUILD_MEMBERS,
+        Discord.Intents.FLAGS.GUILD_BANS,
+        Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS
+    ]
+})
 
 // - - - Instantiation des commandes - - - //
 const commandManager = new CommandManager()
@@ -31,7 +40,14 @@ dBot.login(config.bot.discord.token).catch(err => logs.err(err.toString()))
 // - - - Discord Bot Event - - - //
 // Au démarrage du bot
 dBot.on('ready', () => {
-    dBot.user.setPresence({activity: {name: config.bot.discord.activity}, status: "online"}).then()
+    dBot.user.setPresence({
+            activities: [
+                {
+                    name: config.bot.discord.activity
+                }
+            ],
+            status: "online"
+        })
     logs.info('Bot discord en ligne')
 
     autoClearTextChannels.init(dBot) // Initialisation de l'auto clear
@@ -50,36 +66,10 @@ dBot.on('ready', () => {
 dBot.on('error', err => logs.err(err.toString()))
 
 // Lors d'un nouveau message
-dBot.on('message', async message =>
+dBot.on('messageCreate', async message =>
 {
     // Reset le compteur pour l'auto clear
     autoClearTextChannels.resetChannelTime(message.channel.id)
-
-    // Commande tchat
-    if(message.content.startsWith(config.bot.discord.commandPrefix) && !message.author.bot) // Si les message commence par le prefix de commande et que ce n'est pas un bot
-    {
-        // si une command est retourné
-        let structure = commandManager.getCommandAndArgsFromMessageText(message.content)
-        if(structure)
-        {
-            let command = structure.command
-            let args = structure.args
-
-            // si le membre à la permission d'utiliser la commande
-            if(command.hasPermission(message.member))
-            {
-                // Si la commande est executable
-                if(command.isExecutable(args))
-                {
-                    // Exécuté la commande si toutes les conditions précédente sont réuni
-                    command.execute(message, args).then(() => logs.info(`Commande ${command.getFullName()} exécuté par ${message.member.user.tag} dans le salon ${message.channel.name}`))
-                }
-                else await message.channel.send(`Syntax : ${command.getSyntax()}`)
-            }
-            else await message.channel.send("Vous n'avez pas la permission d'exécuter cette commande")
-        }
-        else await message.channel.send(`Commande invalide`)
-    }
 
     // Ajout création
     if((message.channel.id === config.bot.discord.creation.channel) && message.content.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(config.bot.discord.creation.keyword)) {
@@ -87,12 +77,35 @@ dBot.on('message', async message =>
             logs.info(`Détection d'une création de ${message.member.user.tag}`)
         })
     }
+
+    // Deploy slash commands
+    if((message.content === `<@!${dBot.user.id}> deploy slash commands`)) {
+        if(!dBot.application?.owner) await dBot.application.fetch()
+        if(dBot.application.owner.members.find(m => m.user.id === message.author.id)) {
+            await message.guild.commands.set(commandManager.getSlashData()).then(commands => {
+                commands.forEach(cmd => {
+                    let role = commandManager.getCommandByName(cmd.name).role
+                    if(role !== 0) {
+                        let permissions = [
+                            {
+                                id: role,
+                                type: 'ROLE',
+                                permission: true
+                            }
+                        ]
+                        cmd.permissions.add({permissions})
+                    }
+                })
+            })
+            await message.reply('Déploiement des slash commands')
+        } else await message.delete()
+    }
 })
 
 // Changement dans l'un des salons vocaux
 dBot.on('voiceStateUpdate', (oldState, newState) => {
     // Connexion à un salon vocal
-    if(!oldState.channelID && newState.channelID)
+    if(!oldState.channelId && newState.channelId)
     {
         logs.info(`${newState.member.user.tag} c'est connecté au salon ${newState.channel.name}`)
         vocalConnectManager.addRoleToMember(newState.member)
@@ -101,7 +114,7 @@ dBot.on('voiceStateUpdate', (oldState, newState) => {
     }
 
     // Déconnexion d'un salon vocal
-    if(oldState.channelID && !newState.channelID)
+    if(oldState.channelId && !newState.channelId)
     {
         logs.info(`${oldState.member.user.tag} c'est déconnecté du salon ${oldState.channel.name}`)
         vocalConnectManager.removeRoleToMember(oldState.member)
@@ -110,7 +123,7 @@ dBot.on('voiceStateUpdate', (oldState, newState) => {
     }
 
     // Déplacement d'un salon vocal à un autre
-    if(oldState.channelID && newState.channelID && (oldState.channelID !== newState.channelID))
+    if(oldState.channelId && newState.channelId && (oldState.channelId !== newState.channelId))
     {
         logs.info(`${oldState.member.user.tag} c'est déplacé du salon ${oldState.channel.name} au salon ${newState.channel.name}`)
 
@@ -129,15 +142,13 @@ dBot.on('guildMemberRemove', member => {
     staffNotifManager.sendNotif(`${member.user.tag} a quitté le serveur`)
 })
 
-dBot.on("guildBanAdd", (guild, user) => {
-    guild.fetchBan(user).then(banInfo => {
-        let embed = new Discord.MessageEmbed()
-            .setColor('#d00a27')
-            .setTitle(`   Membre Banni   `)
-            .addField('Membre', user.tag)
-            .addField('raison', banInfo.reason)
-        staffNotifManager.sendNotif({embed: embed})
-    })
+dBot.on("guildBanAdd", (guildBan) => {
+    let embed = new Discord.MessageEmbed()
+        .setColor('#d00a27')
+        .setTitle(`   Membre Banni   `)
+        .addField('Membre', guildBan.user.tag)
+        .addField('raison', guildBan.reason)
+    staffNotifManager.sendNotif({embed: embed})
 })
 
 // Ajout d'une réaction à un message
@@ -207,5 +218,30 @@ dBot.on('messageUpdate', async (oldMessage, newMessage) => {
     if(sondage && (newMessage.embeds.length < 1)) {
         logs.warn('Intégration de sondage supprimé')
         await newMessage.delete()
+    }
+})
+
+// Gestion des Interaction
+dBot.on('interactionCreate', /** @param {Discord.Interaction||Discord.CommandInteraction} interaction */ async (interaction) => {
+    try {
+        // Command Slash
+        if(interaction.isCommand()) {
+            // si une command est retourné
+            let command = commandManager.getCommandFromInteraction(interaction)
+            if(command) {
+                // si le membre à la permission d'utiliser la commande
+                if(command.hasPermission(interaction.member)) {
+                    // Si la commande est executable
+                    if(command.isExecutable())
+                    {
+                        // Exécuté la commande si toutes les conditions précédente sont réuni
+                        command.execute(interaction).then(() => logs.info(`Commande ${command.getFullName()} exécuté par ${interaction.member.user.tag} dans le salon ${interaction.channel.name}`))
+                    }
+                    else await interaction.reply({content: `Une erreur est survenue lors de l'exécution`, ephemeral: true})
+                } else await interaction.reply({content: "'Vous n'avez pas la permission d'exécuter cette commande'", ephemeral: true})
+            } else await interaction.reply({content: 'Commande invalide', ephemeral: true})
+        }
+    } catch (e) {
+        logs.err(e.toString())
     }
 })

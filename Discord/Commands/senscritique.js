@@ -5,6 +5,7 @@ config = require('../../config.json')
 const Discord = require('discord.js')
 const sc = require('@nyakimov/senscritique-api')
 const eventManager = require('../discordBotModule/EventManager')
+const logs = require('../../Global/module/logs')
 
 // Emote
 let choix = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣']
@@ -52,11 +53,19 @@ module.exports = {
     name: "senscritique",
     description: "Recherche une oeuvre sur senscritique",
     syntax: "senscritique",
+    options: [
+        {
+            name: "oeuvre",
+            type: "STRING",
+            description: "Nom de l'oeuvre pour la quelle vous souhaitez obtenir des informations",
+            required: true
+        }
+    ],
     enable: true,
     argsRequire: true,
     role: "everyone",
-    async execute(message, args) {
-        let searchInput = args.join(' ')
+    async execute(interaction) {
+        let searchInput = interaction.options.getString('oeuvre')
 
         let embed = new Discord.MessageEmbed()
             .setTitle(`SensCritique - Recherche en cours`)
@@ -64,15 +73,17 @@ module.exports = {
             .setColor(scColor)
             .setThumbnail(scLogo)
 
-        /** @type Message */
-        let mes = await message.channel.send({embed: embed})
+        await interaction.reply({embeds: [embed]})
+
+        /** @type {any} */
+        let mes = await interaction.fetchReply()
 
         sc.search(searchInput).then(async res => {
             let result = res.items.slice(0, 5)
 
             let embed = getResultEmbed(result, searchInput, true)
 
-            await mes.edit({embed: embed})
+            await interaction.editReply({embeds: [embed]})
 
             for(let i = 0; i < result.length; i++) {
                 mes.react(choix[i]).then()
@@ -84,7 +95,7 @@ module.exports = {
                 eventManager.removeAllListeners(`messageReactionAdd_${mes.id}`)
                 mes.reactions.removeAll()
                 let embed = getResultEmbed(result, searchInput)
-                mes.edit({embed:embed})
+                interaction.editReply({embeds: [embed]})
             }, 30000)
 
             eventManager.once(`messageReactionAdd_${mes.id}`, messageReaction => {
@@ -109,7 +120,7 @@ module.exports = {
                         embed.addField('Créateur(s)', (data.creators && data.creators.length > 0) ? data.creators.join(', ') : "Inconnu")
                         if(data.cover) embed.setImage(data.cover)
 
-                        mes.edit({embed: embed})
+                        interaction.editReply({embeds: [embed]})
                     }).catch(e => {
                         let embed = new Discord.MessageEmbed()
                             .setTitle(`SensCritique - Une erreur est survenue`)
@@ -117,9 +128,9 @@ module.exports = {
                             .setColor('#D33D33')
                             .setThumbnail(scLogo)
 
-                        mes.edit({embed: embed})
+                        interaction.editReply({embeds: [embed]})
 
-                        console.error(e)
+                        logs.err(e.toString())
                     })
                 } else {
                     let embed = new Discord.MessageEmbed()
@@ -128,7 +139,7 @@ module.exports = {
                         .setColor('#D33D33')
                         .setThumbnail(scLogo)
 
-                    mes.edit({embed: embed})
+                    interaction.editReply({embeds: [embed]})
                 }
             })
         }).catch(e => {
@@ -138,10 +149,10 @@ module.exports = {
                 .setColor('#D33D33')
                 .setThumbnail(scLogo)
 
-            mes.edit({embed: embed})
+            interaction.editReply({embeds: [embed]})
             mes.reactions.removeAll()
 
-            console.error(e)
+            logs.err(e.toString())
         })
     }
 }

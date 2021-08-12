@@ -5,22 +5,32 @@ module.exports = {
     name: "suggestion",
     description: "Une suggestion ? c'est ici !",
     syntax: "suggestion (votre recommandation)",
+    options: [
+        {
+            name: "message",
+            type: "STRING",
+            description: "Votre suggestion",
+            required: true
+        }
+    ],
     enable: true,
     argsRequire: true,
     role: "everyone",
-    async execute(message, args) {
+    async execute(interaction) {
+        let message = interaction.options.getString('message')
+
         let embed = new Discord.MessageEmbed()
 
-        embed.setTitle(`Suggestion de ${message.member.displayName}`)
+        embed.setTitle(`Suggestion de ${interaction.member.displayName}`)
         embed.setColor('#FCFC9C')
-        embed.setFooter(message.author.tag, message.author.displayAvatarURL())
+        embed.setFooter(interaction.user.tag, interaction.user.displayAvatarURL())
         embed.setTimestamp()
-        embed.setDescription(args.join(' '))
+        embed.setDescription(message)
 
-        staffNotifManager.sendNotif(embed).then(m => {
+        staffNotifManager.sendNotif({embeds: [embed]}).then(m => {
             m.react('❤')
             m.react('💀')
-            message.channel.send('Votre suggestion a bien été envoyé')
+            interaction.reply({content: 'Votre suggestion a bien été envoyé', ephemeral: true})
         })
     }
 }

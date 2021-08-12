@@ -36,7 +36,7 @@ exports.init = (dBot) => {
         if(value.autoClear && value.autoClear.active && value.autoClear.delay) // Si des param d'auto clear sont présent et qu'ils sont activé
         {
             channels[key] = {delay: value.autoClear.delay, notRemoveFirstMessage: value.autoClear.notRemoveFirstMessage, timeout: null}
-            clearTchat(key)
+            clearTchat(key).then()
         }
     }
 }

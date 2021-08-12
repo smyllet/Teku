@@ -1,4 +1,5 @@
 const fs = require('fs')
+const Discord = require('discord.js')
 const Command = require('./Command')
 const config = require('../../config.json')
 
@@ -30,6 +31,7 @@ class CommandManager
                                 command.name,
                                 subCommand.description,
                                 subCommand.syntax,
+                                subCommand.options,
                                 subCommand.enable,
                                 subCommand.argsRequire,
                                 subCommand.role,
@@ -50,6 +52,7 @@ class CommandManager
                         null,
                         command.description,
                         command.syntax,
+                        command.options,
                         command.enable,
                         command.argsRequire,
                         command.role,
@@ -100,6 +103,27 @@ class CommandManager
         else return null
     }
 
+    /** @param {Discord.CommandInteraction} interaction
+     *  @return {Command} Command */
+    // Obtenir une commande et des arguments à partir d'un message Discord
+    getCommandFromInteraction(interaction)
+    {
+        let command = this.getCommandByName(interaction.commandName)
+
+        if(command)
+        {
+            let subCommandName = interaction.options.getSubcommand(false)
+            if(command.subCommands && subCommandName)
+            {
+                let subCommand = command.subCommands.getCommandByName(subCommandName)
+                if(subCommand) return subCommand
+                else return null
+            }
+            else return command
+        }
+        else return null
+    }
+
     /** @return {array<Command>} commandsList */
     getCommandsList()
     {
@@ -111,6 +135,27 @@ class CommandManager
         return commandsList
     }
 
+    /** @return {any} slashData */
+    getSlashData()
+    {
+        let datas = []
+        for(let [key, command] of Object.entries(this.commands))
+        {
+            datas.push(command.getSlashData())
+        }
+        return datas
+    }
+
+    /** @return {any} slashData */
+    getSubSlashData()
+    {
+        let datas = []
+        for(let [key, command] of Object.entries(this.commands))
+        {
+            datas.push(command.getSubSlashData())
+        }
+        return datas
+    }
 }
 
 module.exports = CommandManager

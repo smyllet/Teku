@@ -6,7 +6,14 @@ module.exports = {
     name: "help",
     description: "Liste des commandes",
     syntax: "help (commande)",
-    enable: true,
+    options: [
+        {
+            name: "commande",
+            type: "STRING",
+            description: "Nom de la commande pour la quelle vous souhaitez optenir de l'aide"
+        }
+    ],
+    enable: false,
     argsRequire: false,
     role: "everyone",
     async execute(message, args) {
@@ -41,25 +48,27 @@ module.exports = {
 
             for (let [key, value] of Object.entries(filtreList))
             {
-                embed.addField(key, value)
+                embed.addField(key, value.toString())
             }
 
-            message.channel.send({embed: embed}).then()
+            message.channel.send({embeds: [embed]}).then()
         }
         else
         {
-            let command = commandManager.getCommandAndArgsFromMessageText(config.bot.discord.commandPrefix + args.join(' ')).command
-            if(command.hasPermission(message.member))
-            {
-                let embed = new Discord.MessageEmbed()
-                    .setColor('#0E7DC6')
-                    .setTitle(`   Aide commande : ${command.getFullName()}   `)
-                    .setDescription(command.description)
-                    .addField('Syntaxe', command.getSyntax())
+            let command = commandManager.getCommandAndArgsFromMessageText(config.bot.discord.commandPrefix + args.join(' '))?.command
+            if(command) {
+                if(command.hasPermission(message.member))
+                {
+                    let embed = new Discord.MessageEmbed()
+                        .setColor('#0E7DC6')
+                        .setTitle(`   Aide commande : ${command.getFullName()}   `)
+                        .setDescription(command.description)
+                        .addField('Syntaxe', command.getSyntax())
 
-                message.channel.send({embed: embed}).then()
-            }
-            else message.channel.send("Vous n'avez pas la permission d'exécuter cette commande")
+                    message.channel.send({embeds: [embed]}).then()
+                }
+                else message.channel.send("Vous n'avez pas la permission d'exécuter cette commande")
+            } else message.channel.send("Commande inexistante")
         }
     }
 }
