@@ -11,12 +11,12 @@
   "license": "ISC",
   "dependencies": {
     "@discordjs/opus": "^0.3.3",
-    "@discordjs/voice": "^0.5.5",
     "@nyakimov/senscritique-api": "^1.1.5",
-    "discord.js": "^13.0.0-dev.t1627906063.6e0ea02",
+    "discord.js": "^13.0.1",
     "mocha": "^8.3.2",
     "url-parse": "^1.5.1",
     "youtube-search-api": "^1.0.10",
+    "ytdl-core": "^4.9.1",
     "ytdl-core-discord": "^1.2.5"
   }
 }
