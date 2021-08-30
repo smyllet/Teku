@@ -353,7 +353,7 @@ module.exports = {
                     async execute(interaction) {
                         let channel = interaction.options.getChannel('salon')
 
-                        if(channel.type === "GUILD_TEXT") {
+                        if(channel.isText()) {
                             // Récupération du sondage en cours de création
                             let creationSondage = SondageManager.getCreationSondage()
                             // Absence de sondage en cours de création
