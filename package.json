@@ -10,7 +10,7 @@
   "author": "Smyllet",
   "license": "ISC",
   "dependencies": {
-    "@discordjs/opus": "^0.3.3",
+    "@discordjs/opus": "^0.8.0",
     "@nyakimov/senscritique-api": "^1.1.5",
     "blagues-api": "^2.1.0",
     "discord.js": "^13.0.1",
